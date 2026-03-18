@@ -4,6 +4,7 @@ import { MissionDetailsPanel } from "./MissionDetailsPanel";
 export function MissionsSidebar({
   editingMission,
   allAssignees,
+  onAddUser,
   onBackToFilters,
   onChangeEditingField,
   onSaveMissionChanges,
@@ -45,6 +46,7 @@ export function MissionsSidebar({
         <FiltersPanel
           open={openFilterPanel}
           onToggleOpen={() => setOpenFilterPanel((v) => !v)}
+          onAddUser={onAddUser}
           filterPreset={filterPreset}
           onApplyPreset={handleApplyPreset}
           filterName={filterName}

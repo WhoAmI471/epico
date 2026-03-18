@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 import {
-  FILTER_PRESETS,
-  INITIAL_MISSIONS,
   PRIORITY_CONFIG_RU,
-  PRIORITY_LABEL_EN,
-  PRIORITY_VISUAL,
   TYPE_CONFIG,
 } from "../features/missions/constants";
 import { classNames } from "../shared/ui";
@@ -14,49 +11,32 @@ import { MissionsHeader } from "../features/missions/ui/MissionsHeader";
 import { MissionsList } from "../features/missions/ui/MissionsList";
 import { CreateMissionBar } from "../features/missions/ui/CreateMissionBar";
 import { MissionsSidebar } from "../features/missions/ui/MissionsSidebar";
-
-function MissionTypeBadge({ type }) {
-  const config = TYPE_CONFIG[type];
-
-  if (!config) return null;
-
-  return (
-    <span
-      className={classNames(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-        "bg-opacity-10 text-zinc-100 border border-white/5",
-        type === "feature" && "bg-sky-500/10 text-sky-100 border-sky-500/40",
-        type === "research" &&
-          "bg-violet-500/10 text-violet-100 border-violet-500/40",
-        type === "task" &&
-          "bg-emerald-500/10 text-emerald-100 border-emerald-500/40",
-      )}
-    >
-      <span
-        className={classNames(
-          "mr-1 h-1.5 w-1.5 rounded-full",
-          TYPE_CONFIG[type].color,
-        )}
-      />
-      {config.label}
-    </span>
-  );
-}
-
-// (moved into panels; kept page lean)
-
-function PriorityInline({ priority }) {
-  const visual = PRIORITY_VISUAL[priority];
-  if (!visual) return null;
-  return (
-    <span className={classNames("text-[11px] leading-none", visual.color)}>
-      {visual.icon}
-    </span>
-  );
-}
+import { RequireAuth } from "../shared/auth/RequireAuth";
+import { RequireOnboarding } from "../shared/auth/RequireOnboarding";
+import {
+  loadProjectsFromLocalStorage,
+  saveProjectsToLocalStorage,
+  getAccessibleProjects,
+  createProject,
+  addMemberToProject,
+  updateProjectMissions,
+} from "../features/projects/localRepository";
+import { deriveHandleFromSession } from "../features/projects/utils";
+import { ProductHeader } from "../features/projects/ui/ProductHeader";
 
 export default function Home() {
-  const [missions, setMissions] = useState(INITIAL_MISSIONS);
+  const { data: session, status } = useSession();
+
+  const [projects, setProjects] = useState([]);
+  const [currentProjectId, setCurrentProjectId] = useState(null);
+  const [onboardingDisplayName, setOnboardingDisplayName] = useState(null);
+
+  const currentProject = useMemo(
+    () => projects.find((p) => p.id === currentProjectId) || null,
+    [projects, currentProjectId],
+  );
+
+  const [missions, setMissions] = useState([]);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftType, setDraftType] = useState("feature");
   const [draftPriority, setDraftPriority] = useState("medium");
@@ -79,10 +59,75 @@ export default function Home() {
   const [selectedMissionId, setSelectedMissionId] = useState(null);
   const [editingMission, setEditingMission] = useState(null);
 
+  const projectMembers = currentProject?.members || [];
   const allAssignees = useMemo(
-    () => Array.from(new Set(missions.map((m) => m.assignee))),
-    [missions],
+    () => projectMembers.map((m) => m.handle).filter(Boolean),
+    [projectMembers],
   );
+  const currentUserId = session?.user?.id || session?.user?.sub;
+  const currentUserHandle = useMemo(() => {
+    if (!currentUserId) return allAssignees[0] || null;
+    return (
+      projectMembers.find((m) => m.userId === currentUserId)?.handle ||
+      allAssignees[0] ||
+      null
+    );
+  }, [currentUserId, projectMembers, allAssignees]);
+
+  const [projectsReady, setProjectsReady] = useState(false);
+  const accessibleProjects = useMemo(() => {
+    if (!currentUserId) return [];
+    return getAccessibleProjects(projects, currentUserId);
+  }, [projects, currentUserId]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    if (projectsReady) return;
+
+    const userId = session?.user?.id || session?.user?.sub;
+    if (!userId) return;
+
+    const onboardingNameKey = `epico:displayName:${userId}`;
+    const onboardingDisplayName =
+      localStorage.getItem(onboardingNameKey) ||
+      session?.user?.name ||
+      "User";
+    setOnboardingDisplayName(onboardingDisplayName);
+
+    const existingProjects = loadProjectsFromLocalStorage();
+    const accessible = getAccessibleProjects(existingProjects, userId);
+
+    let nextProjects = existingProjects;
+    let nextCurrentProject = accessible[0] || null;
+
+    if (!nextCurrentProject) {
+      const ownerMember = {
+        userId,
+        name: onboardingDisplayName,
+        handle: deriveHandleFromSession(session.user, onboardingDisplayName),
+      };
+      const project = createProject({
+        title: onboardingDisplayName,
+        ownerMember,
+      });
+      nextProjects = [project, ...existingProjects];
+      nextCurrentProject = project;
+    }
+
+    setProjects(nextProjects);
+    setCurrentProjectId(nextCurrentProject.id);
+    saveProjectsToLocalStorage(nextProjects);
+    setProjectsReady(true);
+  }, [status, projectsReady, session]);
+
+  useEffect(() => {
+    if (!currentProject) return;
+    setMissions(currentProject.missions || []);
+    setSelectedMissionId(null);
+    setEditingMission(null);
+    setSelectedAssignees([]);
+    setOnlyMyMissions(false);
+  }, [currentProject?.id]);
 
   const visibleMissions = useMemo(() => {
     let result = missions;
@@ -115,8 +160,8 @@ export default function Home() {
       result = result.filter((m) => m.lane === laneFilter);
     }
 
-    if (onlyMyMissions) {
-      result = result.slice(0, 3);
+    if (onlyMyMissions && currentUserHandle) {
+      result = result.filter((m) => m.assignee === currentUserHandle);
     }
 
     return result;
@@ -129,6 +174,7 @@ export default function Home() {
     selectedAssignees,
     laneFilter,
     onlyMyMissions,
+    currentUserHandle,
   ]);
 
   useEffect(() => {
@@ -193,32 +239,111 @@ export default function Home() {
   function handleCreateMission() {
     const title =
       draftTitle.trim() || `Новая миссия #${missions.length + 1}`;
-    const nextId = missions[missions.length - 1]?.id + 1 || 1;
-    setMissions((prev) => [
-      {
-        id: nextId,
-        title,
-        date: new Date().toISOString().slice(0, 10),
-        time: new Date().toLocaleTimeString("ru-RU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        type: draftType,
-        lane: draftLane,
-        priority: draftPriority,
-        assignee: allAssignees[0] ?? "@new",
-      },
-      ...prev,
-    ]);
+    const nextId = missions[0]?.id ? Math.max(...missions.map((m) => m.id)) + 1 : 1;
+
+    const createdMission = {
+      id: nextId,
+      title,
+      date: new Date().toISOString().slice(0, 10),
+      time: new Date().toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      type: draftType,
+      lane: draftLane,
+      priority: draftPriority,
+      assignee: allAssignees[0] ?? "@new",
+    };
+
+    const nextMissions = [createdMission, ...missions];
+    setMissions(nextMissions);
+    setProjects((prev) => {
+      const updated = prev.map((p) =>
+        p.id === currentProjectId
+          ? updateProjectMissions(p, nextMissions)
+          : p,
+      );
+      saveProjectsToLocalStorage(updated);
+      return updated;
+    });
     setDraftTitle("");
+  }
+
+  function handleCreateProject() {
+    if (status !== "authenticated") return;
+    const userId = currentUserId;
+    if (!userId) return;
+
+    const title =
+      onboardingDisplayName ||
+      session?.user?.name ||
+      "Untitled";
+
+    const ownerMember = {
+      userId,
+      name: title,
+      handle: deriveHandleFromSession(session.user, title),
+    };
+
+    const project = createProject({ title, ownerMember });
+    const nextProjects = [project, ...projects];
+    setProjects(nextProjects);
+    saveProjectsToLocalStorage(nextProjects);
+    setCurrentProjectId(project.id);
+    setMissions([]);
+    setSelectedMissionId(null);
+    setEditingMission(null);
+    setSelectedAssignees([]);
+    setOnlyMyMissions(false);
+    setOpenFilterPanel(true);
+    setFilterPreset(null);
+    handleResetFilters();
+  }
+
+  function handleAddUserToProject() {
+    if (!currentProjectId) return;
+    const name = window.prompt("User display name:");
+    if (!name) return;
+    const usernameOrHandle = window.prompt(
+      "Username/handle (without @). Leave empty to auto-generate:"
+    );
+
+    const normalizedHandle = usernameOrHandle
+      ? `@${String(usernameOrHandle).replace(/^@/, "").trim()}`
+      : deriveHandleFromSession({ name }, name);
+
+    const member = {
+      userId: `member:${normalizedHandle}`,
+      name: String(name),
+      handle: normalizedHandle,
+    };
+
+    setProjects((prev) => {
+      const updated = prev.map((p) =>
+        p.id === currentProjectId ? addMemberToProject(p, member) : p,
+      );
+      saveProjectsToLocalStorage(updated);
+      return updated;
+    });
+    setSelectedAssignees([]);
   }
 
   function handleSaveMissionChanges() {
     if (!editingMission) return;
 
-    setMissions((prev) =>
-      prev.map((m) => (m.id === editingMission.id ? editingMission : m)),
+    const nextMissions = missions.map((m) =>
+      m.id === editingMission.id ? editingMission : m,
     );
+    setMissions(nextMissions);
+    setProjects((prev) => {
+      const updated = prev.map((p) =>
+        p.id === currentProjectId
+          ? updateProjectMissions(p, nextMissions)
+          : p,
+      );
+      saveProjectsToLocalStorage(updated);
+      return updated;
+    });
   }
 
   function handleChangeEditingField(field, value) {
@@ -228,9 +353,17 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-[#05060a] to-[#050509] text-zinc-50">
-      <main className="flex w-full flex-col px-8 py-6 lg:px-10 lg:py-8">
-        <MissionsHeader />
+    <RequireAuth>
+      <RequireOnboarding>
+        <div className="flex min-h-screen bg-gradient-to-b from-[#05060a] to-[#0b0b14] text-zinc-50">
+          <main className="flex w-full flex-col px-8 py-6 lg:px-10 lg:py-8">
+            <MissionsHeader />
+            <ProductHeader
+              projects={accessibleProjects}
+              currentProjectId={currentProjectId}
+              onSelectProject={setCurrentProjectId}
+              onCreateProject={handleCreateProject}
+            />
 
         <section className="flex flex-1 flex-col gap-6 lg:flex-row">
           <div className="flex-1">
@@ -280,6 +413,7 @@ export default function Home() {
           <MissionsSidebar
             editingMission={editingMission}
             allAssignees={allAssignees}
+            onAddUser={handleAddUserToProject}
             onBackToFilters={() => setSelectedMissionId(null)}
             onChangeEditingField={handleChangeEditingField}
             onSaveMissionChanges={handleSaveMissionChanges}
@@ -311,8 +445,10 @@ export default function Home() {
             handleResetFilters={handleResetFilters}
             handleSaveFilter={handleSaveFilter}
           />
-        </section>
-      </main>
-    </div>
+          </section>
+          </main>
+        </div>
+      </RequireOnboarding>
+    </RequireAuth>
   );
 }

@@ -17,6 +17,7 @@ import { MissionTypeIcon } from "./MissionTypeIcon";
 export function FiltersPanel({
   open,
   onToggleOpen,
+  onAddUser,
   filterPreset,
   onApplyPreset,
   filterName,
@@ -49,9 +50,21 @@ export function FiltersPanel({
             Настройте отображение миссий по нужным критериям.
           </p>
         </div>
-        <Button variant="solid" size="sm" onClick={onToggleOpen}>
-          {open ? "Скрыть" : "Показать"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {onAddUser ? (
+            <Button
+              variant="primary"
+              size="sm"
+              className="rounded-full"
+              onClick={onAddUser}
+            >
+              Add user
+            </Button>
+          ) : null}
+          <Button variant="solid" size="sm" onClick={onToggleOpen}>
+            {open ? "Скрыть" : "Показать"}
+          </Button>
+        </div>
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">

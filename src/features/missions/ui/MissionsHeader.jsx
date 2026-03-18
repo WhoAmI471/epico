@@ -1,63 +1,90 @@
-import { classNames, IconButton } from "../../../shared/ui";
+"use client";
+
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { IconButton, Button } from "../../../shared/ui";
 
 export function MissionsHeader() {
+  const { data: session, status } = useSession();
+
+  const displayName =
+    session?.user?.name ||
+    session?.telegram?.username ||
+    session?.telegram?.first_name ||
+    "User";
+
+  const isAuthed = status === "authenticated";
+
+  const avatarInitial = (() => {
+    const raw = String(displayName || "")
+      .replace(/^@/, "")
+      .trim();
+    const parts = raw.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return raw.slice(0, 2).toUpperCase() || "U";
+  })();
+
   return (
-    <header className="mb-8 flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-400 shadow-lg shadow-violet-500/40">
-          <span className="text-lg font-bold leading-none">E</span>
+    <header className="mb-4 rounded-xl bg-[#080A0E] px-6 py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/group-17.svg"
+            alt="Epico logo"
+            width={54}
+            height={50}
+            priority
+            className="h-[44px] w-auto"
+          />
+          <div className="text-2xl font-semibold tracking-tight">Epico</div>
         </div>
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold tracking-tight">
-              Product`s title
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900/80 px-2 py-0.5 text-[11px] font-medium text-zinc-300 ring-1 ring-zinc-700/70">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              В работе
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="inline-flex h-9 items-center gap-2 rounded-full bg-zinc-900/80 px-4 text-xs font-medium text-zinc-200 ring-1 ring-zinc-700/80 hover:bg-zinc-800"
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Online
+          </button>
+
+          <IconButton size="md" variant="solid" aria-label="Help">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-[13px] font-semibold">
+              ?
             </span>
-          </div>
-          <p className="mt-1 text-xs text-zinc-400">
-            Управление миссиями продукта, исследованиями и задачами.
-          </p>
+          </IconButton>
+
+          {isAuthed ? (
+            <>
+              <Link href="/profile" aria-label="Open profile">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900/80 ring-1 ring-zinc-700/80 hover:bg-zinc-800">
+                  <span className="text-xs font-semibold text-zinc-200">
+                    {avatarInitial}
+                  </span>
+                </span>
+              </Link>
+              <Button
+                variant="solid"
+                size="sm"
+                className="rounded-full"
+                onClick={() => signOut({ callbackUrl: "/auth" })}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Link href="/auth" aria-label="Sign in">
+              <IconButton size="md" variant="solid">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800 text-xs font-semibold">
+                  👤
+                </span>
+              </IconButton>
+            </Link>
+          )}
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="flex -space-x-2">
-          {["L", "V", "E", "I", "P"].map((initial, index) => (
-            <span
-              key={initial}
-              className={classNames(
-                "inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-900 text-[11px] font-semibold text-white",
-                index === 0 && "bg-gradient-to-tr from-sky-500 to-violet-500",
-                index === 1 &&
-                  "bg-gradient-to-tr from-fuchsia-500 to-amber-400",
-                index === 2 && "bg-gradient-to-tr from-emerald-500 to-lime-400",
-                index === 3 && "bg-gradient-to-tr from-indigo-500 to-sky-400",
-                index === 4 && "bg-gradient-to-tr from-rose-500 to-orange-400",
-              )}
-            >
-              {initial}
-            </span>
-          ))}
-        </div>
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-full bg-zinc-900/80 px-4 text-xs font-medium text-zinc-200 ring-1 ring-zinc-700/80 hover:bg-zinc-800"
-        >
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          Online
-        </button>
-        <IconButton size="md" variant="solid" aria-label="Help">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-[13px] font-semibold">
-            ?
-          </span>
-        </IconButton>
-        <IconButton size="md" variant="solid" aria-label="User">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800 text-xs font-semibold">
-            👤
-          </span>
-        </IconButton>
       </div>
     </header>
   );
