@@ -61,3 +61,25 @@ export function updateProjectMissions(project, missions) {
   };
 }
 
+export function updateProjectTitle(project, title) {
+  return {
+    ...project,
+    title: title || "Untitled",
+  };
+}
+
+export function removeMemberFromProject(project, userId) {
+  const nextMembers = (project?.members || []).filter(
+    (m) => m?.userId !== userId,
+  );
+
+  if (nextMembers.length === (project?.members || []).length) {
+    return project;
+  }
+
+  return {
+    ...project,
+    members: nextMembers,
+  };
+}
+

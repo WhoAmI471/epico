@@ -1,12 +1,14 @@
 "use client";
 
-import { classNames, Button } from "../../../shared/ui";
+import { classNames, Button, IconButton } from "../../../shared/ui";
 
 export function ProjectSwitcher({
   projects,
   currentProjectId,
   onSelectProject,
   onCreateProject,
+  onLeaveProject,
+  leaveActionLabel,
 }) {
   return (
     <div className="flex items-center gap-3">
@@ -24,6 +26,18 @@ export function ProjectSwitcher({
           </option>
         ))}
       </select>
+
+      <IconButton
+        size="md"
+        variant="solid"
+        aria-label={leaveActionLabel || "Leave / Delete project"}
+        onClick={onLeaveProject}
+        className="rounded-full"
+      >
+        <span className="text-[18px] leading-none font-semibold text-zinc-200">
+          ×
+        </span>
+      </IconButton>
 
       <Button
         variant="solid"

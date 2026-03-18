@@ -20,6 +20,8 @@ import {
   createProject,
   addMemberToProject,
   updateProjectMissions,
+  updateProjectTitle,
+  removeMemberFromProject,
 } from "../features/projects/localRepository";
 import { deriveHandleFromSession } from "../features/projects/utils";
 import { ProductHeader } from "../features/projects/ui/ProductHeader";
@@ -300,6 +302,61 @@ export default function Home() {
     handleResetFilters();
   }
 
+  function handleRenameProjectTitle(projectId, title) {
+    if (!projectId) return;
+    setProjects((prev) => {
+      const updated = prev.map((p) =>
+        p.id === projectId ? updateProjectTitle(p, title) : p,
+      );
+      saveProjectsToLocalStorage(updated);
+      return updated;
+    });
+  }
+
+  function handleLeaveOrDeleteProject() {
+    if (!currentProjectId) return;
+    if (!currentUserId) return;
+
+    setProjects((prev) => {
+      const target = prev.find((p) => p.id === currentProjectId);
+      if (!target) return prev;
+
+      const isMember = (target.members || []).some(
+        (m) => m?.userId === currentUserId,
+      );
+      if (!isMember) return prev;
+
+      const nextProjects = (target.members?.length || 0) <= 1
+        ? prev.filter((p) => p.id !== currentProjectId)
+        : prev.map((p) =>
+            p.id === currentProjectId
+              ? removeMemberFromProject(p, currentUserId)
+              : p,
+          );
+
+      const accessible = getAccessibleProjects(nextProjects, currentUserId);
+      let nextProject = accessible[0] || null;
+
+      // If user left the last project, create a new one (local prototype).
+      if (!nextProject) {
+        const title =
+          onboardingDisplayName ||
+          session?.user?.name ||
+          "Untitled";
+        const ownerMember = {
+          userId: currentUserId,
+          name: title,
+          handle: deriveHandleFromSession(session.user, title),
+        };
+        nextProject = createProject({ title, ownerMember });
+        nextProjects.unshift(nextProject);
+      }
+
+      setCurrentProjectId(nextProject.id);
+      return nextProjects;
+    });
+  }
+
   function handleAddUserToProject() {
     if (!currentProjectId) return;
     const name = window.prompt("User display name:");
@@ -355,14 +412,20 @@ export default function Home() {
   return (
     <RequireAuth>
       <RequireOnboarding>
-        <div className="flex min-h-screen bg-gradient-to-b from-[#05060a] to-[#0b0b14] text-zinc-50">
-          <main className="flex w-full flex-col px-8 py-6 lg:px-10 lg:py-8">
+        <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#06070b] to-[#10101b] text-zinc-50">
+          <div className="sticky top-0 z-50">
             <MissionsHeader />
+          </div>
+
+          <main className="flex w-full flex-col px-8 py-6 lg:px-10 lg:py-8">
             <ProductHeader
               projects={accessibleProjects}
               currentProjectId={currentProjectId}
+              currentUserId={currentUserId}
               onSelectProject={setCurrentProjectId}
               onCreateProject={handleCreateProject}
+              onRenameProjectTitle={handleRenameProjectTitle}
+              onLeaveProject={handleLeaveOrDeleteProject}
             />
 
         <section className="flex flex-1 flex-col gap-6 lg:flex-row">

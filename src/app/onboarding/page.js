@@ -59,7 +59,7 @@ export default function OnboardingPage() {
   if (status !== "authenticated") return null;
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-[#05060a] to-[#050509] text-zinc-50">
+    <div className="flex min-h-screen bg-gradient-to-b from-[#06070b] to-[#10101b] text-zinc-50">
       <main className="mx-auto flex w-full max-w-md flex-col px-6 py-10">
         <div className="mb-6">
           <h1 className="text-lg font-semibold tracking-tight">Welcome</h1>

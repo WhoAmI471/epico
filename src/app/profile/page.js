@@ -9,7 +9,7 @@ export default function ProfilePage() {
   return (
     <RequireAuth>
       <RequireOnboarding>
-      <div className="flex min-h-screen bg-gradient-to-b from-[#05060a] to-[#0b0b14] text-zinc-50">
+      <div className="flex min-h-screen bg-gradient-to-b from-[#06070b] to-[#10101b] text-zinc-50">
           <main className="mx-auto flex w-full max-w-2xl flex-col px-6 py-10">
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -28,7 +28,7 @@ export function MissionsHeader() {
   })();
 
   return (
-    <header className="mb-4 rounded-xl bg-[#080A0E] px-6 py-4">
+    <header className="mb-0 rounded-none bg-[#080A0E] px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Image
