@@ -744,7 +744,7 @@ export default function Home() {
       const ownerMember = {
         userId,
         name: storedName,
-        handle: deriveHandleFromSession(session.user, storedName),
+        handle: deriveHandleFromSession(session?.user, storedName),
       };
       const storedProductName = localStorage.getItem(`epico:productName:${userId}`);
       const projectTitle = storedProductName || storedName;
@@ -939,7 +939,9 @@ export default function Home() {
   return (
     <RequireAuth>
       <RequireOnboarding>
-        <div className="flex min-h-screen flex-col bg-[#0d0d0f] text-zinc-50">
+        <div className="flex min-h-screen flex-col bg-[#0d0d0f] text-zinc-50 relative">
+          {/* Desktop centering wrapper */}
+          <div className="mx-auto w-full max-w-lg lg:border-x lg:border-white/[0.06] relative flex-1 flex flex-col">
           {/* Sticky header */}
           <div className="sticky top-0 z-30 bg-[#0d0d0f]">
             <MissionsHeader
@@ -1059,6 +1061,7 @@ export default function Home() {
             onAddUser={handleAddUserToProject}
             currentUserId={currentUserId}
           />
+          </div>
         </div>
       </RequireOnboarding>
     </RequireAuth>
