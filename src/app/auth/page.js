@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { Button, classNames } from "../../shared/ui";
 
 export default function AuthPage() {
   const telegramBot = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME
@@ -13,7 +13,6 @@ export default function AuthPage() {
   useEffect(() => {
     if (!telegramBot) return;
 
-    // Used by Telegram Login Widget `data-onauth="onTelegramAuth(user)"`
     window.onTelegramAuth = (user) => {
       signIn("telegram", {
         telegramData: JSON.stringify(user),
@@ -37,92 +36,85 @@ export default function AuthPage() {
     script.setAttribute("data-onauth", "onTelegramAuth(user)");
     container.appendChild(script);
 
-    return () => {
-      container.innerHTML = "";
-    };
+    return () => { container.innerHTML = ""; };
   }, [telegramBot]);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-[#06070b] to-[#10101b] text-zinc-50">
-      <main className="mx-auto flex w-full max-w-md flex-col px-6 py-10">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-400 shadow-lg shadow-violet-500/40">
-            <span className="text-lg font-bold leading-none">E</span>
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">Epico</h1>
-            <p className="text-xs text-zinc-500">Sign in prototype page</p>
-          </div>
+    <div className="flex min-h-screen flex-col bg-[#0d0d0f] text-zinc-50">
+      <main className="flex flex-1 flex-col px-5 pb-10">
+        {/* Logo */}
+        <div className="mt-6 mb-10 flex items-center gap-2.5">
+          <Image src="/group-17.svg" alt="Epico" width={44} height={40} className="h-9 w-auto" />
+          <span className="text-[20px] font-semibold">Epico</span>
         </div>
 
-        <div className="rounded-2xl bg-zinc-950/80 p-5 ring-1 ring-zinc-900">
-          <h2 className="text-sm font-semibold">Sign in</h2>
-          <p className="mt-1 text-xs text-zinc-500">
-            Выберите способ входа.
+        {/* Welcome text */}
+        <div className="mb-8">
+          <h1 className="text-[30px] font-bold leading-tight">
+            Welcome to Epico!
+          </h1>
+          <p className="mt-2 text-[14px] text-zinc-400">
+            Sign in to manage your product missions
           </p>
+        </div>
 
-          <div className="mt-5 space-y-2.5">
-            <Button
-              variant="solid"
-              size="md"
-              className="w-full justify-center"
-              onClick={() => signIn("google", { callbackUrl: "/" })}
-            >
-              Continue with Google
-            </Button>
+        {/* Auth buttons */}
+        <div className="space-y-3">
+          {/* Google */}
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            className="flex w-full items-center gap-3 rounded-2xl bg-white px-5 py-4 text-[15px] font-semibold text-black hover:bg-zinc-100 transition-colors active:scale-[0.98]"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <path d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.8 2.31-2.35 3.25l-.03.2 3.4 2.64.46.05c2.18-2.01 3.63-4.96 3.63-7.81z" fill="#4285F4"/>
+              <path d="M10 20c2.7 0 4.96-.89 6.62-2.41l-3.4-2.64c-.91.64-2.1 1.04-3.22 1.04-2.5 0-4.61-1.64-5.37-3.9l-.2.02-3.53 2.73-.05.19C2.68 17.92 6.15 20 10 20z" fill="#34A853"/>
+              <path d="M4.63 12.09A6.07 6.07 0 0 1 4.3 10c0-.73.13-1.43.32-2.09l-.01-.22-3.57-2.77-.19.1A10.02 10.02 0 0 0 0 10c0 1.61.38 3.14 1.05 4.5l3.58-2.41z" fill="#FBBC05"/>
+              <path d="M10 3.97c1.75 0 2.93.76 3.6 1.38l2.64-2.57C14.95 1.19 12.7 0 10 0 6.15 0 2.68 2.08 1.05 5.5l3.57 2.77C5.39 5.6 7.5 3.97 10 3.97z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
 
-            <div className="rounded-xl bg-zinc-950/60 p-3 ring-1 ring-zinc-900">
-              <p className="text-[11px] font-medium text-zinc-300">
-                Continue with Telegram
-              </p>
-              <p className="mt-1 text-[11px] text-zinc-500">
-                {telegramBot
-                  ? `Bot: @${telegramBot}`
-                  : "Укажи NEXT_PUBLIC_TELEGRAM_BOT_USERNAME в .env.local"}
-              </p>
+          {/* Telegram */}
+          <div className="rounded-2xl bg-[#1a1a1f] ring-1 ring-white/[0.06] overflow-hidden">
+            <div className="px-5 pt-4 pb-3">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#229ED9]">
+                  <svg width="16" height="14" viewBox="0 0 24 20" fill="white">
+                    <path d="M22.26 1.67L18.97 18.1c-.24 1.07-.87 1.34-1.77.83l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 8.98-8.1c.39-.35-.08-.54-.6-.2L5.42 12.48.6 10.98c-1.07-.33-1.08-1.07.22-1.58L21.04.24c.89-.33 1.67.2 1.22 1.43z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-zinc-100">Telegram</p>
+                  {telegramBot ? (
+                    <p className="text-[11px] text-zinc-500">@{telegramBot}</p>
+                  ) : (
+                    <p className="text-[11px] text-zinc-600">Not configured</p>
+                  )}
+                </div>
+              </div>
 
               {telegramBot ? (
-                <div
-                  id="telegram-login-container"
-                  className="mt-4 flex items-center justify-center"
-                />
+                <div id="telegram-login-container" className="flex items-center justify-center py-1" />
               ) : (
-                <Button
-                  variant="solid"
-                  size="sm"
-                  className="mt-3 w-full justify-center opacity-60"
-                  disabled
-                >
-                  Telegram not configured
-                </Button>
+                <div className="rounded-xl bg-white/[0.03] px-4 py-3 text-[11px] text-zinc-600 ring-1 ring-white/[0.04]">
+                  Укажи NEXT_PUBLIC_TELEGRAM_BOT_USERNAME в .env.local для включения входа через Telegram.
+                </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-6 text-xs text-zinc-500">
-          Demo links:{" "}
-          <Link href="/" className="text-zinc-200 hover:underline">
-            Missions
-          </Link>{" "}
-          ·{" "}
-          <Link href="/profile" className="text-zinc-200 hover:underline">
-            Profile
-          </Link>
-        </div>
-
-        <div className="mt-4 text-[11px] text-zinc-500">
+        {/* Demo link */}
+        <div className="mt-auto pt-10 text-center">
           <Link
             href="/"
-            className={classNames(
-              "font-medium text-emerald-400 hover:text-emerald-300",
-            )}
+            className="text-[13px] text-emerald-400 hover:text-emerald-300"
           >
-            Back to missions
+            Перейти без авторизации →
           </Link>
         </div>
       </main>
     </div>
   );
 }
-

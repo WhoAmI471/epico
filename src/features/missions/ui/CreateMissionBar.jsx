@@ -1,4 +1,4 @@
-import { classNames, IconButton } from "../../../shared/ui";
+import { classNames } from "../../../shared/ui";
 import {
   PRIORITY_CONFIG_RU,
   PRIORITY_VISUAL,
@@ -20,51 +20,80 @@ export function CreateMissionBar({
   draftLane,
   setDraftLane,
 }) {
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      onCreate();
+      setShowConfigurator(false);
+    }
+  }
+
   return (
-    <div className="relative flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-zinc-950/70 px-4 py-2.5 ring-1 ring-zinc-800/90">
-      <IconButton
-        size="sm"
-        variant="solid"
-        onClick={() => setShowConfigurator((value) => !value)}
-        title="Настроить тип и статус создаваемой миссии"
-      >
-        +
-      </IconButton>
+    <div className="relative px-4">
+      {/* Input row */}
+      <div className="flex items-center gap-3 rounded-2xl bg-[#1a1a1f] px-3 py-2.5 ring-1 ring-white/[0.06]">
+        {/* Configurator toggle */}
+        <button
+          type="button"
+          onClick={() => setShowConfigurator((v) => !v)}
+          title="Настроить новую миссию"
+          className={classNames(
+            "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border text-base transition-colors",
+            showConfigurator
+              ? "border-emerald-500/60 bg-emerald-500/20 text-emerald-400"
+              : "border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-zinc-200",
+          )}
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M2 4h10M2 7h7M2 10h4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
 
-      <input
-        type="text"
-        className="min-w-0 flex-1 bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
-        placeholder="Add mission"
-        value={draftTitle}
-        onChange={(e) => setDraftTitle(e.target.value)}
-      />
+        <input
+          type="text"
+          value={draftTitle}
+          onChange={(e) => setDraftTitle(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Add mission"
+          className="min-w-0 flex-1 bg-transparent text-[13px] text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+        />
 
-      <IconButton
-        size="sm"
-        variant="primary"
-        onClick={onCreate}
-        title="Создать миссию"
-      >
-        +
-      </IconButton>
+        <button
+          type="button"
+          onClick={() => {
+            onCreate();
+            setShowConfigurator(false);
+          }}
+          aria-label="Создать миссию"
+          className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-[15px] font-semibold text-black shadow hover:bg-emerald-400 transition-colors"
+        >
+          +
+        </button>
+      </div>
 
+      {/* Configurator dropdown */}
       {showConfigurator && (
-        <div className="absolute left-0 right-0 top-full z-20 mt-2 rounded-xl bg-zinc-950 p-3 text-xs text-zinc-200 shadow-xl ring-1 ring-zinc-800">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
+        <div className="absolute left-4 right-4 top-full z-30 mt-2 rounded-2xl bg-[#1a1a1f] p-4 ring-1 ring-white/[0.06] shadow-2xl">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
               Новая миссия
             </span>
             <button
               type="button"
               onClick={() => setShowConfigurator(false)}
-              className="rounded-full px-2 py-0.5 text-[10px] text-zinc-400 hover:bg-zinc-900"
+              className="text-[11px] text-zinc-500 hover:text-zinc-300"
             >
               Закрыть
             </button>
           </div>
 
+          {/* Type */}
           <div className="mb-3">
-            <p className="mb-1 text-[11px] font-medium text-zinc-300">Тип</p>
+            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Тип</p>
             <div className="flex flex-wrap gap-1.5">
               {Object.entries(TYPE_CONFIG).map(([key, config]) => (
                 <button
@@ -72,10 +101,10 @@ export function CreateMissionBar({
                   type="button"
                   onClick={() => setDraftType(key)}
                   className={classNames(
-                    "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                     draftType === key
-                      ? "ring-emerald-400 bg-emerald-500/20 text-emerald-50"
-                      : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
+                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
                   )}
                 >
                   <MissionTypeIcon type={key} size="sm" />
@@ -85,10 +114,9 @@ export function CreateMissionBar({
             </div>
           </div>
 
+          {/* Priority */}
           <div className="mb-3">
-            <p className="mb-1 text-[11px] font-medium text-zinc-300">
-              Приоритет
-            </p>
+            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Приоритет</p>
             <div className="flex flex-wrap gap-1.5">
               {["lowest", "low", "medium", "high", "highest"].map((key) => {
                 const visual = PRIORITY_VISUAL[key];
@@ -100,29 +128,23 @@ export function CreateMissionBar({
                     className={classNames(
                       "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                       draftPriority === key
-                        ? "ring-emerald-400 bg-emerald-500/20 text-emerald-50"
-                        : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
+                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                        : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
                     )}
                   >
-                    <span
-                      className={classNames(
-                        "text-[11px] leading-none",
-                        visual?.color,
-                      )}
-                    >
+                    <span className={classNames("text-[10px]", visual?.color)}>
                       {visual?.icon}
                     </span>
-                    <span>{PRIORITY_CONFIG_RU[key]}</span>
+                    {PRIORITY_CONFIG_RU[key]}
                   </button>
                 );
               })}
             </div>
           </div>
 
+          {/* Lane */}
           <div>
-            <p className="mb-1 text-[11px] font-medium text-zinc-300">
-              Статус (колонка)
-            </p>
+            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Статус</p>
             <div className="flex flex-wrap gap-1.5">
               {LANES.map((lane) => (
                 <button
@@ -132,8 +154,8 @@ export function CreateMissionBar({
                   className={classNames(
                     "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                     draftLane === lane
-                      ? "ring-emerald-400 bg-emerald-500/20 text-emerald-50"
-                      : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
+                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
                   )}
                 >
                   {lane}
@@ -146,4 +168,3 @@ export function CreateMissionBar({
     </div>
   );
 }
-
