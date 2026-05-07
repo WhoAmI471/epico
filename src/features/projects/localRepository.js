@@ -35,13 +35,13 @@ export function getAccessibleProjects(projects, userId) {
   return projects.filter((p) => p?.members?.some((m) => m.userId === userId));
 }
 
-export function createProject({ title, ownerMember }) {
+export function createProject({ title, ownerMember, missions = [] }) {
   return {
     id: uid(),
     title: title || "Untitled",
     createdAt: new Date().toISOString(),
     members: [ownerMember],
-    missions: [],
+    missions,
   };
 }
 
