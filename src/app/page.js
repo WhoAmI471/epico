@@ -29,7 +29,46 @@ import {
 import { deriveHandleFromSession } from "../features/projects/utils";
 
 /* ────────────────────────────────────────────────────────── */
-/* Horizontal type-filter chips                              */
+/* Inline type shape (matches Figma exactly)                  */
+/* feature = violet square, research = blue circle,           */
+/* task = green triangle                                       */
+/* ────────────────────────────────────────────────────────── */
+function TypeShapeInline({ type }) {
+  if (type === "feature") {
+    return (
+      <span
+        className="inline-block flex-shrink-0"
+        style={{ width: 9, height: 9, background: "#8b5cf6", borderRadius: 2 }}
+      />
+    );
+  }
+  if (type === "research") {
+    return (
+      <span
+        className="inline-block flex-shrink-0 rounded-full"
+        style={{ width: 9, height: 9, background: "#38bdf8" }}
+      />
+    );
+  }
+  if (type === "task") {
+    return (
+      <span
+        className="inline-block flex-shrink-0"
+        style={{
+          width: 0,
+          height: 0,
+          borderLeft: "5px solid transparent",
+          borderRight: "5px solid transparent",
+          borderBottom: "9px solid #22c55e",
+        }}
+      />
+    );
+  }
+  return null;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* Type filter chips                                          */
 /* ────────────────────────────────────────────────────────── */
 function TypeChips({ selectedTypes, onToggleType }) {
   const chips = [
@@ -51,10 +90,10 @@ function TypeChips({ selectedTypes, onToggleType }) {
           }
         }}
         className={classNames(
-          "inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
+          "inline-flex flex-shrink-0 items-center rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
           !anyActive
-            ? "bg-white text-black"
-            : "bg-white/10 text-zinc-400 hover:bg-white/15",
+            ? "bg-white/15 text-white"
+            : "bg-white/[0.06] text-zinc-400 hover:bg-white/10",
         )}
       >
         All
@@ -65,12 +104,13 @@ function TypeChips({ selectedTypes, onToggleType }) {
           type="button"
           onClick={() => onToggleType(key)}
           className={classNames(
-            "inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
+            "inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-colors",
             selectedTypes[key]
-              ? "bg-white text-black"
-              : "bg-white/10 text-zinc-400 hover:bg-white/15",
+              ? "bg-white/15 text-white"
+              : "bg-white/[0.06] text-zinc-400 hover:bg-white/10",
           )}
         >
+          <TypeShapeInline type={key} />
           {label}
         </button>
       ))}
@@ -79,24 +119,17 @@ function TypeChips({ selectedTypes, onToggleType }) {
 }
 
 /* ────────────────────────────────────────────────────────── */
-/* Bottom sheet wrapper                                       */
+/* Bottom sheet wrapper                                        */
 /* ────────────────────────────────────────────────────────── */
 function BottomSheet({ open, onClose, title, children }) {
   if (!open) return null;
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      {/* Sheet */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-[#131316] ring-1 ring-white/[0.06] lg:left-auto lg:right-0 lg:top-0 lg:bottom-0 lg:w-[380px] lg:rounded-none lg:max-h-none">
-        {/* Handle (mobile only) */}
+      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed bottom-0 left-0 right-0 z-50 max-h-[90vh] overflow-y-auto rounded-t-3xl bg-[#1b1e23] ring-1 ring-white/[0.06] lg:left-auto lg:right-0 lg:top-0 lg:bottom-0 lg:w-[400px] lg:rounded-none lg:max-h-none">
         <div className="flex justify-center pt-3 pb-1 lg:hidden">
           <div className="h-1 w-10 rounded-full bg-white/20" />
         </div>
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
           <span className="text-[15px] font-semibold text-zinc-100">{title}</span>
           <button
@@ -110,6 +143,189 @@ function BottomSheet({ open, onClose, title, children }) {
         <div className="px-5 py-4">{children}</div>
       </div>
     </>
+  );
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* Full-screen mission detail overlay                          */
+/* ────────────────────────────────────────────────────────── */
+function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClose }) {
+  if (!mission) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#131618] overflow-y-auto">
+      {/* Max-width wrapper to match mobile-first layout on desktop */}
+      <div className="mx-auto w-full max-w-lg h-full flex flex-col">
+        {/* Header */}
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06] sticky top-0 bg-[#131618] z-10">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-zinc-400"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M11 4L6 9l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <h2 className="text-[15px] font-semibold text-zinc-100 flex-1 truncate">
+            {mission.title}
+          </h2>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 px-4 py-5 space-y-5 overflow-y-auto">
+          {/* Mission title */}
+          <div>
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Mission</p>
+            <div className="flex items-center gap-2 rounded-2xl bg-[#1b1e23] px-4 py-3 ring-1 ring-white/[0.06]">
+              <input
+                type="text"
+                value={mission.title}
+                onChange={(e) => onChangeField("title", e.target.value)}
+                className="flex-1 bg-transparent text-[14px] text-zinc-100 focus:outline-none"
+              />
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="#71717a" strokeWidth="1.3" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          {/* Type */}
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Type</p>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(TYPE_CONFIG).map(([key, config]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => onChangeField("type", key)}
+                  className={classNames(
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                    mission.type === key
+                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
+                  )}
+                >
+                  <span className={classNames("h-1.5 w-1.5 rounded-full", config.color)} />
+                  {config.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Priority */}
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Priority</p>
+            <div className="flex flex-wrap gap-2">
+              {["lowest", "low", "medium", "high", "highest"].map((key) => {
+                const visual = PRIORITY_VISUAL[key];
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onChangeField("priority", key)}
+                    className={classNames(
+                      "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                      mission.priority === key
+                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                        : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
+                    )}
+                  >
+                    <span className={classNames("text-[11px]", visual?.color)}>{visual?.icon}</span>
+                    {PRIORITY_LABEL_EN[key]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Status / Lane */}
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Status</p>
+            <div className="flex flex-wrap gap-2">
+              {LANES.map((lane) => (
+                <button
+                  key={lane}
+                  type="button"
+                  onClick={() => onChangeField("lane", lane)}
+                  className={classNames(
+                    "rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                    mission.lane === lane
+                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
+                  )}
+                >
+                  {lane}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Date */}
+          <div>
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Deadline</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="mb-1 text-[11px] font-medium text-zinc-500">Date</p>
+                <input
+                  type="date"
+                  value={mission.date}
+                  onChange={(e) => onChangeField("date", e.target.value)}
+                  className="w-full rounded-xl bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-emerald-500/60"
+                />
+              </div>
+              <div>
+                <p className="mb-1 text-[11px] font-medium text-zinc-500">Time</p>
+                <input
+                  type="time"
+                  value={mission.time}
+                  onChange={(e) => onChangeField("time", e.target.value)}
+                  className="w-full rounded-xl bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Assignee */}
+          {allAssignees.length > 0 && (
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Assignee</p>
+              <div className="flex flex-wrap gap-2">
+                {allAssignees.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() => onChangeField("assignee", name)}
+                    className={classNames(
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                      mission.assignee === name
+                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                        : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
+                    )}
+                  >
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-[9px] font-bold text-white">
+                      {name.replace("@", "").slice(0, 2).toUpperCase()}
+                    </span>
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Save button — sticky bottom */}
+        <div className="sticky bottom-0 px-4 py-4 bg-[#131618] border-t border-white/[0.06]">
+          <button
+            type="button"
+            onClick={onSave}
+            className="w-full rounded-2xl bg-emerald-500 py-3.5 text-[14px] font-semibold text-black hover:bg-emerald-400 transition-colors active:scale-[0.98]"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -143,9 +359,8 @@ function FiltersPanelContent({
 }) {
   return (
     <div className="space-y-5">
-      {/* Presets */}
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Быстрые фильтры</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Quick filters</p>
         <div className="flex flex-wrap gap-2">
           {FILTER_PRESETS.map((preset) => (
             <button
@@ -156,7 +371,7 @@ function FiltersPanelContent({
                 "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 filterPreset === preset.id
                   ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                  : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                  : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
               {preset.label}
@@ -165,9 +380,8 @@ function FiltersPanelContent({
         </div>
       </div>
 
-      {/* Mission type */}
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Тип</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Type</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(TYPE_CONFIG).map(([key, config]) => (
             <button
@@ -178,7 +392,7 @@ function FiltersPanelContent({
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 selectedTypes[key]
                   ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                  : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                  : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
               {config.label}
@@ -187,9 +401,8 @@ function FiltersPanelContent({
         </div>
       </div>
 
-      {/* Lane */}
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Статус</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Status</p>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -198,10 +411,10 @@ function FiltersPanelContent({
               "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               laneFilter === "All Mission"
                 ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
             )}
           >
-            Все
+            All
           </button>
           {LANES.map((lane) => (
             <button
@@ -212,7 +425,7 @@ function FiltersPanelContent({
                 "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 laneFilter === lane
                   ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                  : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                  : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
               {lane}
@@ -221,9 +434,8 @@ function FiltersPanelContent({
         </div>
       </div>
 
-      {/* Priority */}
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Приоритет</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Priority</p>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -232,10 +444,10 @@ function FiltersPanelContent({
               "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               filterPriority === "all"
                 ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
             )}
           >
-            Все
+            All
           </button>
           {["lowest", "low", "medium", "high", "highest"].map((key) => {
             const visual = PRIORITY_VISUAL[key];
@@ -248,7 +460,7 @@ function FiltersPanelContent({
                   "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   filterPriority === key
                     ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                    : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                    : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                 )}
               >
                 <span className={classNames("text-[10px]", visual?.color)}>{visual?.icon}</span>
@@ -259,39 +471,37 @@ function FiltersPanelContent({
         </div>
       </div>
 
-      {/* Date range */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">С даты</p>
+          <p className="mb-1 text-[11px] font-medium text-zinc-400">From date</p>
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="w-full rounded-xl bg-white/5 px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
+            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
           />
         </div>
         <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">По дату</p>
+          <p className="mb-1 text-[11px] font-medium text-zinc-400">To date</p>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="w-full rounded-xl bg-white/5 px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
+            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
           />
         </div>
       </div>
 
-      {/* Assignees */}
       {allAssignees.length > 0 && (
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Исполнители</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Assignees</p>
             <button
               type="button"
               onClick={onToggleAssigneesAll}
               className="text-[11px] font-medium text-emerald-400 hover:text-emerald-300"
             >
-              {selectedAssignees.length ? "Сбросить" : "Все"}
+              {selectedAssignees.length ? "Reset" : "All"}
             </button>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -304,7 +514,7 @@ function FiltersPanelContent({
                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   selectedAssignees.includes(name)
                     ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                    : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
+                    : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                 )}
               >
                 <span className="inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-[9px] font-bold text-white">
@@ -317,9 +527,8 @@ function FiltersPanelContent({
         </div>
       )}
 
-      {/* Only my missions */}
       <div className="flex items-center justify-between">
-        <span className="text-[12px] text-zinc-300">Только мои миссии</span>
+        <span className="text-[12px] text-zinc-300">Only my missions</span>
         <button
           type="button"
           role="switch"
@@ -339,32 +548,30 @@ function FiltersPanelContent({
         </button>
       </div>
 
-      {/* Add user */}
       {onAddUser && (
         <button
           type="button"
           onClick={onAddUser}
-          className="w-full rounded-xl bg-white/5 py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+          className="w-full rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
-          + Добавить участника
+          + Add member
         </button>
       )}
 
-      {/* Actions */}
       <div className="flex gap-2 pt-2 border-t border-white/[0.06]">
         <button
           type="button"
           onClick={onReset}
-          className="flex-1 rounded-xl bg-white/5 py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+          className="flex-1 rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
-          Сбросить
+          Reset
         </button>
         <button
           type="button"
           onClick={onSave}
           className="flex-1 rounded-xl bg-emerald-500 py-2.5 text-[12px] font-semibold text-black hover:bg-emerald-400 transition-colors"
         >
-          Применить
+          Apply
         </button>
       </div>
     </div>
@@ -372,159 +579,7 @@ function FiltersPanelContent({
 }
 
 /* ────────────────────────────────────────────────────────── */
-/* Mission details panel content                              */
-/* ────────────────────────────────────────────────────────── */
-function MissionDetailContent({ mission, allAssignees, onChangeField, onSave }) {
-  if (!mission) return null;
-
-  return (
-    <div className="space-y-4">
-      {/* Title */}
-      <div>
-        <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Название</p>
-        <input
-          type="text"
-          value={mission.title}
-          onChange={(e) => onChangeField("title", e.target.value)}
-          className="w-full rounded-xl bg-white/5 px-3 py-2.5 text-[13px] text-zinc-100 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
-        />
-      </div>
-
-      {/* Type */}
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Тип</p>
-        <div className="flex flex-wrap gap-1.5">
-          {Object.entries(TYPE_CONFIG).map(([key, config]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => onChangeField("type", key)}
-              className={classNames(
-                "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                mission.type === key
-                  ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                  : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-              )}
-            >
-              {config.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Priority */}
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Приоритет</p>
-        <div className="flex flex-wrap gap-1.5">
-          {["lowest", "low", "medium", "high", "highest"].map((key) => {
-            const visual = PRIORITY_VISUAL[key];
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => onChangeField("priority", key)}
-                className={classNames(
-                  "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                  mission.priority === key
-                    ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                    : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-                )}
-              >
-                <span className={classNames("text-[10px]", visual?.color)}>{visual?.icon}</span>
-                {PRIORITY_LABEL_EN[key]}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Lane */}
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Статус</p>
-        <div className="flex flex-wrap gap-1.5">
-          {LANES.map((lane) => (
-            <button
-              key={lane}
-              type="button"
-              onClick={() => onChangeField("lane", lane)}
-              className={classNames(
-                "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                mission.lane === lane
-                  ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                  : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-              )}
-            >
-              {lane}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Date & time */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">Дата</p>
-          <input
-            type="date"
-            value={mission.date}
-            onChange={(e) => onChangeField("date", e.target.value)}
-            className="w-full rounded-xl bg-white/5 px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none"
-          />
-        </div>
-        <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">Время</p>
-          <input
-            type="time"
-            value={mission.time}
-            onChange={(e) => onChangeField("time", e.target.value)}
-            className="w-full rounded-xl bg-white/5 px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none"
-          />
-        </div>
-      </div>
-
-      {/* Assignee */}
-      {allAssignees.length > 0 && (
-        <div>
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Исполнитель</p>
-          <div className="flex flex-wrap gap-1.5">
-            {allAssignees.map((name) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() => onChangeField("assignee", name)}
-                className={classNames(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                  mission.assignee === name
-                    ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                    : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-                )}
-              >
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-[9px] font-bold text-white">
-                  {name.replace("@", "").slice(0, 2).toUpperCase()}
-                </span>
-                {name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Save */}
-      <div className="pt-2">
-        <button
-          type="button"
-          onClick={onSave}
-          className="w-full rounded-xl bg-emerald-500 py-3 text-[13px] font-semibold text-black hover:bg-emerald-400 transition-colors"
-        >
-          Сохранить изменения
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────────────────────── */
-/* Project switcher drawer                                    */
+/* Project menu / switcher                                    */
 /* ────────────────────────────────────────────────────────── */
 function ProjectMenu({
   open,
@@ -543,11 +598,10 @@ function ProjectMenu({
   const currentProject = projects.find((p) => p.id === currentProjectId);
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Проект">
+    <BottomSheet open={open} onClose={onClose} title="Project">
       <div className="space-y-4">
-        {/* Current project title */}
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Название продукта</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Product name</p>
           {editingTitle ? (
             <div className="flex gap-2">
               <input
@@ -562,7 +616,7 @@ function ProjectMenu({
                   }
                   if (e.key === "Escape") setEditingTitle(false);
                 }}
-                className="flex-1 rounded-xl bg-white/5 px-3 py-2 text-[13px] text-zinc-100 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
+                className="flex-1 rounded-xl bg-white/[0.05] px-3 py-2 text-[13px] text-zinc-100 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
               />
               <button
                 type="button"
@@ -572,7 +626,7 @@ function ProjectMenu({
                 }}
                 className="rounded-xl bg-emerald-500 px-3 py-2 text-[12px] font-semibold text-black"
               >
-                ОК
+                OK
               </button>
             </div>
           ) : (
@@ -582,18 +636,17 @@ function ProjectMenu({
                 setDraftTitle(currentProject?.title || "");
                 setEditingTitle(true);
               }}
-              className="w-full rounded-xl bg-white/5 px-3 py-2.5 text-left text-[13px] text-zinc-100 ring-1 ring-white/10 hover:ring-white/20"
+              className="w-full rounded-xl bg-white/[0.05] px-3 py-2.5 text-left text-[13px] text-zinc-100 ring-1 ring-white/10 hover:ring-white/20"
             >
-              {currentProject?.title || "Без названия"}
-              <span className="ml-2 text-[11px] text-zinc-500">· нажми для изменения</span>
+              {currentProject?.title || "Untitled"}
+              <span className="ml-2 text-[11px] text-zinc-500">· tap to rename</span>
             </button>
           )}
         </div>
 
-        {/* Members */}
         {currentProject?.members?.length > 0 && (
           <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Участники</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Members</p>
             <div className="flex flex-wrap gap-2">
               {currentProject.members.map((m, i) => {
                 const colors = ["from-sky-500 to-violet-500", "from-fuchsia-500 to-amber-400", "from-emerald-500 to-lime-400"];
@@ -610,10 +663,9 @@ function ProjectMenu({
           </div>
         )}
 
-        {/* Switch project */}
         {projects.length > 1 && (
           <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Переключить продукт</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Switch product</p>
             <div className="space-y-1">
               {projects.map((p) => (
                 <button
@@ -627,42 +679,69 @@ function ProjectMenu({
                     "w-full rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors",
                     p.id === currentProjectId
                       ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40"
-                      : "bg-white/5 text-zinc-300 hover:bg-white/10",
+                      : "bg-white/[0.05] text-zinc-300 hover:bg-white/10",
                   )}
                 >
-                  {p.title || "Без названия"}
+                  {p.title || "Untitled"}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Actions */}
         <div className="space-y-2 pt-2 border-t border-white/[0.06]">
           <button
             type="button"
             onClick={() => { onAddUser(); onClose(); }}
-            className="w-full rounded-xl bg-white/5 py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+            className="w-full rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
           >
-            + Добавить участника
+            + Add member
           </button>
           <button
             type="button"
             onClick={() => { onCreateProject(); onClose(); }}
-            className="w-full rounded-xl bg-white/5 py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+            className="w-full rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
           >
-            + Новый продукт
+            + New product
           </button>
           <button
             type="button"
             onClick={() => { onLeaveProject(); onClose(); }}
             className="w-full rounded-xl bg-rose-500/10 py-2.5 text-[12px] font-medium text-rose-400 ring-1 ring-rose-500/30 hover:bg-rose-500/20 transition-colors"
           >
-            {currentProject?.members?.length <= 1 ? "Удалить продукт" : "Покинуть продукт"}
+            {currentProject?.members?.length <= 1 ? "Delete product" : "Leave product"}
           </button>
         </div>
       </div>
     </BottomSheet>
+  );
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* Empty state                                                */
+/* ────────────────────────────────────────────────────────── */
+function EmptyState() {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center py-16 text-center px-6">
+      {/* Mascot */}
+      <div className="mb-6">
+        <div className="flex gap-6 mb-3 justify-center">
+          <div className="w-7 h-7 rounded-full border-2 border-zinc-600" />
+          <div className="w-7 h-7 rounded-full border-2 border-zinc-600" />
+        </div>
+        <div
+          className="w-12 h-6 mx-auto"
+          style={{
+            borderBottom: "2px solid #52525b",
+            borderLeft: "2px solid #52525b",
+            borderRight: "2px solid #52525b",
+            borderRadius: "0 0 9999px 9999px",
+          }}
+        />
+      </div>
+      <p className="text-[22px] font-bold text-white mb-2">Add the first mission</p>
+      <p className="text-[14px] text-zinc-500">Select the type, and enter it</p>
+    </div>
   );
 }
 
@@ -682,11 +761,6 @@ export default function Home() {
   );
 
   const [missions, setMissions] = useState([]);
-  const [draftTitle, setDraftTitle] = useState("");
-  const [draftType, setDraftType] = useState("feature");
-  const [draftPriority, setDraftPriority] = useState("medium");
-  const [draftLane, setDraftLane] = useState("Backlog");
-  const [showDraftConfigurator, setShowDraftConfigurator] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState({ feature: false, research: false, task: false });
   const [filterPreset, setFilterPreset] = useState(null);
   const [filterName, setFilterName] = useState("Untitled-1");
@@ -699,7 +773,6 @@ export default function Home() {
   const [selectedMissionId, setSelectedMissionId] = useState(null);
   const [editingMission, setEditingMission] = useState(null);
 
-  // UI state
   const [showFiltersSheet, setShowFiltersSheet] = useState(false);
   const [showProjectMenu, setShowProjectMenu] = useState(false);
 
@@ -828,27 +901,28 @@ export default function Home() {
     setLaneFilter("All Mission");
   }
 
-  function handleCreateMission() {
-    const title = draftTitle.trim() || `Новая миссия #${missions.length + 1}`;
-    const nextId = missions[0]?.id ? Math.max(...missions.map((m) => m.id)) + 1 : 1;
+  function handleCreateMission({ title, type } = {}) {
+    const missionTitle = (title || "").trim() || `Mission #${missions.length + 1}`;
+    const nextId = missions.length > 0 ? Math.max(...missions.map((m) => m.id)) + 1 : 1;
     const createdMission = {
       id: nextId,
-      title,
+      title: missionTitle,
       date: new Date().toISOString().slice(0, 10),
       time: new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }),
-      type: draftType,
-      lane: draftLane,
-      priority: draftPriority,
-      assignee: allAssignees[0] ?? "@new",
+      type: type ?? "task",
+      lane: "Backlog",
+      priority: "medium",
+      assignee: allAssignees[0] ?? "",
     };
     const nextMissions = [createdMission, ...missions];
     setMissions(nextMissions);
     setProjects((prev) => {
-      const updated = prev.map((p) => p.id === currentProjectId ? updateProjectMissions(p, nextMissions) : p);
+      const updated = prev.map((p) =>
+        p.id === currentProjectId ? updateProjectMissions(p, nextMissions) : p,
+      );
       saveProjectsToLocalStorage(updated);
       return updated;
     });
-    setDraftTitle("");
   }
 
   function handleCreateProject() {
@@ -905,9 +979,9 @@ export default function Home() {
 
   function handleAddUserToProject() {
     if (!currentProjectId) return;
-    const name = window.prompt("Имя пользователя:");
+    const name = window.prompt("Member name:");
     if (!name) return;
-    const usernameOrHandle = window.prompt("Username/handle (без @). Оставьте пустым для авто-генерации:");
+    const usernameOrHandle = window.prompt("Username/handle (without @). Leave empty for auto:");
     const normalizedHandle = usernameOrHandle
       ? `@${String(usernameOrHandle).replace(/^@/, "").trim()}`
       : deriveHandleFromSession({ name }, name);
@@ -939,129 +1013,120 @@ export default function Home() {
   return (
     <RequireAuth>
       <RequireOnboarding>
-        <div className="flex min-h-screen flex-col bg-[#0d0d0f] text-zinc-50 relative">
+        <div className="flex min-h-screen flex-col bg-[#131618] text-zinc-50 relative">
           {/* Desktop centering wrapper */}
           <div className="mx-auto w-full max-w-lg lg:border-x lg:border-white/[0.06] relative flex-1 flex flex-col">
-          {/* Sticky header */}
-          <div className="sticky top-0 z-30 bg-[#0d0d0f]">
-            <MissionsHeader
-              projectTitle={currentProject?.title}
-              onOpenFilters={() => setShowFiltersSheet(true)}
-              filtersActive={hasActiveFilters}
-            />
 
-            {/* Type chips */}
-            <TypeChips
-              selectedTypes={selectedTypes}
-              onToggleType={handleToggleType}
-            />
-
-            {/* Create mission bar */}
-            <div className="pb-2">
-              <CreateMissionBar
-                draftTitle={draftTitle}
-                setDraftTitle={setDraftTitle}
-                onCreate={handleCreateMission}
-                showConfigurator={showDraftConfigurator}
-                setShowConfigurator={setShowDraftConfigurator}
-                draftType={draftType}
-                setDraftType={setDraftType}
-                draftPriority={draftPriority}
-                setDraftPriority={setDraftPriority}
-                draftLane={draftLane}
-                setDraftLane={setDraftLane}
+            {/* Sticky header */}
+            <div className="sticky top-0 z-30 bg-[#131618]">
+              <MissionsHeader
+                projectTitle={currentProject?.title}
+                onOpenFilters={() => setShowFiltersSheet(true)}
+                filtersActive={hasActiveFilters}
+                onOpenProjectMenu={() => setShowProjectMenu(true)}
               />
+
+              {/* Type chips */}
+              <TypeChips
+                selectedTypes={selectedTypes}
+                onToggleType={handleToggleType}
+              />
+
+              {/* Create mission bar */}
+              <div className="pb-2">
+                <CreateMissionBar onCreate={handleCreateMission} />
+              </div>
+
+              {/* Missions count bar */}
+              <div className="flex items-center justify-between border-b border-white/[0.04] px-4 pb-2 text-[11px] text-zinc-600">
+                <span>{visibleMissions.length} missions</span>
+                <button
+                  type="button"
+                  onClick={() => setOnlyMyMissions((v) => !v)}
+                  className={classNames(
+                    "inline-flex items-center gap-1 text-[11px] font-medium transition-colors",
+                    onlyMyMissions ? "text-emerald-400" : "text-zinc-600 hover:text-zinc-400",
+                  )}
+                >
+                  <span className={classNames("h-1.5 w-1.5 rounded-full", onlyMyMissions ? "bg-emerald-400" : "bg-zinc-600")} />
+                  Only mine
+                </button>
+              </div>
             </div>
 
-            {/* Missions count bar */}
-            <div className="flex items-center justify-between border-b border-white/[0.04] px-4 pb-2 text-[11px] text-zinc-600">
-              <span>{visibleMissions.length} миссий</span>
-              <button
-                type="button"
-                onClick={() => setOnlyMyMissions((v) => !v)}
-                className={classNames(
-                  "inline-flex items-center gap-1 text-[11px] font-medium transition-colors",
-                  onlyMyMissions ? "text-emerald-400" : "text-zinc-600 hover:text-zinc-400",
-                )}
-              >
-                <span className={classNames("h-1.5 w-1.5 rounded-full", onlyMyMissions ? "bg-emerald-400" : "bg-zinc-600")} />
-                Только мои
-              </button>
-            </div>
+            {/* Missions list or empty state */}
+            <main className="flex-1 flex flex-col">
+              {visibleMissions.length === 0 ? (
+                <EmptyState />
+              ) : (
+                <MissionsList
+                  missions={visibleMissions}
+                  selectedMissionId={selectedMissionId}
+                  onSelect={setSelectedMissionId}
+                />
+              )}
+            </main>
+
+            {/* Filters bottom sheet */}
+            <BottomSheet
+              open={showFiltersSheet}
+              onClose={() => setShowFiltersSheet(false)}
+              title="Filters"
+            >
+              <FiltersPanelContent
+                onAddUser={handleAddUserToProject}
+                filterPreset={filterPreset}
+                onApplyPreset={handleApplyPreset}
+                filterName={filterName}
+                setFilterName={setFilterName}
+                selectedTypes={selectedTypes}
+                onToggleType={handleToggleType}
+                laneFilter={laneFilter}
+                setLaneFilter={setLaneFilter}
+                filterPriority={filterPriority}
+                setFilterPriority={setFilterPriority}
+                dateFrom={dateFrom}
+                setDateFrom={setDateFrom}
+                dateTo={dateTo}
+                setDateTo={setDateTo}
+                allAssignees={allAssignees}
+                selectedAssignees={selectedAssignees}
+                onToggleAssignee={handleToggleAssignee}
+                onToggleAssigneesAll={() =>
+                  setSelectedAssignees(selectedAssignees.length ? [] : [...allAssignees])
+                }
+                onlyMyMissions={onlyMyMissions}
+                setOnlyMyMissions={setOnlyMyMissions}
+                onReset={handleResetFilters}
+                onSave={handleSaveFilter}
+              />
+            </BottomSheet>
+
+            {/* Project menu */}
+            <ProjectMenu
+              open={showProjectMenu}
+              onClose={() => setShowProjectMenu(false)}
+              projects={accessibleProjects}
+              currentProjectId={currentProjectId}
+              onSelectProject={setCurrentProjectId}
+              onCreateProject={handleCreateProject}
+              onLeaveProject={handleLeaveOrDeleteProject}
+              onRenameProject={handleRenameProjectTitle}
+              onAddUser={handleAddUserToProject}
+              currentUserId={currentUserId}
+            />
           </div>
 
-          {/* Missions list */}
-          <main className="flex-1">
-            <MissionsList
-              missions={visibleMissions}
-              selectedMissionId={selectedMissionId}
-              onSelect={setSelectedMissionId}
-            />
-          </main>
-
-          {/* Filters bottom sheet */}
-          <BottomSheet
-            open={showFiltersSheet}
-            onClose={() => setShowFiltersSheet(false)}
-            title="Фильтры"
-          >
-            <FiltersPanelContent
-              onAddUser={handleAddUserToProject}
-              filterPreset={filterPreset}
-              onApplyPreset={handleApplyPreset}
-              filterName={filterName}
-              setFilterName={setFilterName}
-              selectedTypes={selectedTypes}
-              onToggleType={handleToggleType}
-              laneFilter={laneFilter}
-              setLaneFilter={setLaneFilter}
-              filterPriority={filterPriority}
-              setFilterPriority={setFilterPriority}
-              dateFrom={dateFrom}
-              setDateFrom={setDateFrom}
-              dateTo={dateTo}
-              setDateTo={setDateTo}
-              allAssignees={allAssignees}
-              selectedAssignees={selectedAssignees}
-              onToggleAssignee={handleToggleAssignee}
-              onToggleAssigneesAll={() =>
-                setSelectedAssignees(selectedAssignees.length ? [] : [...allAssignees])
-              }
-              onlyMyMissions={onlyMyMissions}
-              setOnlyMyMissions={setOnlyMyMissions}
-              onReset={handleResetFilters}
-              onSave={handleSaveFilter}
-            />
-          </BottomSheet>
-
-          {/* Mission details bottom sheet */}
-          <BottomSheet
-            open={!!selectedMissionId}
-            onClose={() => setSelectedMissionId(null)}
-            title="Детали миссии"
-          >
-            <MissionDetailContent
+          {/* Full-screen mission detail overlay (outside max-w wrapper so it covers full screen) */}
+          {selectedMissionId && (
+            <MissionDetailPage
               mission={editingMission}
               allAssignees={allAssignees}
               onChangeField={handleChangeEditingField}
               onSave={handleSaveMissionChanges}
+              onClose={() => setSelectedMissionId(null)}
             />
-          </BottomSheet>
-
-          {/* Project menu */}
-          <ProjectMenu
-            open={showProjectMenu}
-            onClose={() => setShowProjectMenu(false)}
-            projects={accessibleProjects}
-            currentProjectId={currentProjectId}
-            onSelectProject={setCurrentProjectId}
-            onCreateProject={handleCreateProject}
-            onLeaveProject={handleLeaveOrDeleteProject}
-            onRenameProject={handleRenameProjectTitle}
-            onAddUser={handleAddUserToProject}
-            currentUserId={currentUserId}
-          />
-          </div>
+          )}
         </div>
       </RequireOnboarding>
     </RequireAuth>

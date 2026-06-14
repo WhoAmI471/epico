@@ -1,170 +1,198 @@
-import { classNames } from "../../../shared/ui";
-import {
-  PRIORITY_CONFIG_RU,
-  PRIORITY_VISUAL,
-  TYPE_CONFIG,
-  LANES,
-} from "../constants";
-import { MissionTypeIcon } from "./MissionTypeIcon";
+"use client";
 
-export function CreateMissionBar({
-  draftTitle,
-  setDraftTitle,
-  onCreate,
-  showConfigurator,
-  setShowConfigurator,
-  draftType,
-  setDraftType,
-  draftPriority,
-  setDraftPriority,
-  draftLane,
-  setDraftLane,
-}) {
+import { useEffect, useRef, useState } from "react";
+import { classNames } from "../../../shared/ui";
+
+/* ── Type shape icons matching Figma design ── */
+const TYPE_OPTIONS = [
+  { key: "feature",  label: "Feature" },
+  { key: "research", label: "Research" },
+  { key: "task",     label: "Task" },
+];
+
+function TypeShape({ type, size = 10 }) {
+  if (type === "feature") {
+    return (
+      <span
+        className="inline-block flex-shrink-0"
+        style={{ width: size, height: size, background: "#8b5cf6", borderRadius: 2 }}
+      />
+    );
+  }
+  if (type === "research") {
+    return (
+      <span
+        className="inline-block flex-shrink-0 rounded-full"
+        style={{ width: size, height: size, background: "#38bdf8" }}
+      />
+    );
+  }
+  if (type === "task") {
+    return (
+      <span
+        className="inline-block flex-shrink-0"
+        style={{
+          width: 0,
+          height: 0,
+          borderLeft: `${size / 2}px solid transparent`,
+          borderRight: `${size / 2}px solid transparent`,
+          borderBottom: `${size}px solid #22c55e`,
+        }}
+      />
+    );
+  }
+  return null;
+}
+
+/* ── Grid icon for idle state ── */
+function GridIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <rect x="1" y="1" width="5" height="5" rx="1" fill="#52525b" />
+      <rect x="8" y="1" width="5" height="5" rx="1" fill="#52525b" />
+      <rect x="1" y="8" width="5" height="5" rx="1" fill="#52525b" />
+      <rect x="8" y="8" width="5" height="5" rx="1" fill="#52525b" />
+    </svg>
+  );
+}
+
+/**
+ * CreateMissionBar — 3-step Figma flow:
+ *  idle        → click → type-select
+ *  type-select → pick type → name-input
+ *  name-input  → press "+" or Enter → onCreate({ title, type })
+ *
+ * Props:
+ *   onCreate({ title, type }) — called when user confirms
+ */
+export function CreateMissionBar({ onCreate }) {
+  // "idle" | "type" | "name"
+  const [step, setStep] = useState("idle");
+  const [selectedType, setSelectedType] = useState(null);
+  const [title, setTitle] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (step === "name") {
+      // small delay so the DOM element mounts before focus
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [step]);
+
+  function handleBarClick() {
+    if (step === "idle") setStep("type");
+  }
+
+  function handleSelectType(key) {
+    setSelectedType(key);
+    setStep("name");
+  }
+
+  function handleCreate() {
+    if (!title.trim()) return;
+    onCreate?.({ title: title.trim(), type: selectedType ?? "task" });
+    setTitle("");
+    setSelectedType(null);
+    setStep("idle");
+  }
+
   function handleKeyDown(e) {
     if (e.key === "Enter") {
-      onCreate();
-      setShowConfigurator(false);
+      handleCreate();
+    } else if (e.key === "Escape") {
+      setTitle("");
+      setSelectedType(null);
+      setStep("idle");
     }
   }
 
+  function handlePlusClick(e) {
+    e.stopPropagation();
+    if (step === "name") {
+      handleCreate();
+    } else {
+      handleBarClick();
+    }
+  }
+
+  const plusActive = step === "name" && title.trim().length > 0;
+
   return (
-    <div className="relative px-4">
-      {/* Input row */}
-      <div className="flex items-center gap-3 rounded-2xl bg-[#1a1a1f] px-3 py-2.5 ring-1 ring-white/[0.06]">
-        {/* Configurator toggle */}
-        <button
-          type="button"
-          onClick={() => setShowConfigurator((v) => !v)}
-          title="Настроить новую миссию"
-          className={classNames(
-            "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border text-base transition-colors",
-            showConfigurator
-              ? "border-emerald-500/60 bg-emerald-500/20 text-emerald-400"
-              : "border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-zinc-200",
+    <div className="px-4">
+      <div
+        className={classNames(
+          /* Figma: border-radius 4px, padding 5px top/bottom, 8px left/right */
+          "flex items-center gap-2 bg-[#1b1e23] px-2 py-[5px] ring-1 transition-colors",
+          step === "idle"
+            ? "cursor-pointer ring-white/[0.06] hover:ring-white/10"
+            : "ring-white/[0.08]",
+        )}
+        style={{ borderRadius: 4 }}
+        onClick={step === "idle" ? handleBarClick : undefined}
+      >
+        {/* Left icon — grid (idle/type) or type shape (name) */}
+        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center">
+          {step === "name" && selectedType ? (
+            <TypeShape type={selectedType} size={13} />
+          ) : (
+            <GridIcon />
           )}
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M2 4h10M2 7h7M2 10h4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        </div>
 
-        <input
-          type="text"
-          value={draftTitle}
-          onChange={(e) => setDraftTitle(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Add mission"
-          className="min-w-0 flex-1 bg-transparent text-[13px] text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
-        />
+        {/* Middle content */}
+        {step === "idle" && (
+          <span className="flex-1 text-[13px] text-zinc-600 select-none">
+            Add mission
+          </span>
+        )}
 
+        {step === "type" && (
+          <div className="flex flex-1 items-center gap-2 overflow-x-auto scrollbar-hide">
+            {TYPE_OPTIONS.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelectType(key);
+                }}
+                style={{ borderRadius: 4 }}
+                className="inline-flex flex-shrink-0 items-center gap-1.5 bg-white/[0.07] px-4 py-[10px] text-[12px] font-medium text-zinc-200 hover:bg-white/[0.12] transition-colors"
+              >
+                <TypeShape type={key} size={10} />
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {step === "name" && (
+          <input
+            ref={inputRef}
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Mission name…"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+          />
+        )}
+
+        {/* Right "+" button */}
         <button
           type="button"
-          onClick={() => {
-            onCreate();
-            setShowConfigurator(false);
-          }}
-          aria-label="Создать миссию"
-          className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-[15px] font-semibold text-black shadow hover:bg-emerald-400 transition-colors"
+          onClick={handlePlusClick}
+          aria-label="Create mission"
+          className={classNames(
+            "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[18px] font-light transition-colors",
+            plusActive
+              ? "bg-emerald-500 text-black hover:bg-emerald-400"
+              : "text-zinc-500 hover:text-zinc-300",
+          )}
         >
           +
         </button>
       </div>
-
-      {/* Configurator dropdown */}
-      {showConfigurator && (
-        <div className="absolute left-4 right-4 top-full z-30 mt-2 rounded-2xl bg-[#1a1a1f] p-4 ring-1 ring-white/[0.06] shadow-2xl">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-              Новая миссия
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowConfigurator(false)}
-              className="text-[11px] text-zinc-500 hover:text-zinc-300"
-            >
-              Закрыть
-            </button>
-          </div>
-
-          {/* Type */}
-          <div className="mb-3">
-            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Тип</p>
-            <div className="flex flex-wrap gap-1.5">
-              {Object.entries(TYPE_CONFIG).map(([key, config]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setDraftType(key)}
-                  className={classNames(
-                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                    draftType === key
-                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                      : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-                  )}
-                >
-                  <MissionTypeIcon type={key} size="sm" />
-                  {config.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Priority */}
-          <div className="mb-3">
-            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Приоритет</p>
-            <div className="flex flex-wrap gap-1.5">
-              {["lowest", "low", "medium", "high", "highest"].map((key) => {
-                const visual = PRIORITY_VISUAL[key];
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setDraftPriority(key)}
-                    className={classNames(
-                      "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                      draftPriority === key
-                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                        : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-                    )}
-                  >
-                    <span className={classNames("text-[10px]", visual?.color)}>
-                      {visual?.icon}
-                    </span>
-                    {PRIORITY_CONFIG_RU[key]}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Lane */}
-          <div>
-            <p className="mb-1.5 text-[11px] font-medium text-zinc-400">Статус</p>
-            <div className="flex flex-wrap gap-1.5">
-              {LANES.map((lane) => (
-                <button
-                  key={lane}
-                  type="button"
-                  onClick={() => setDraftLane(lane)}
-                  className={classNames(
-                    "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                    draftLane === lane
-                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
-                      : "bg-white/5 ring-white/10 text-zinc-300 hover:ring-white/20",
-                  )}
-                >
-                  {lane}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
