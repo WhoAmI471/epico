@@ -31,7 +31,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru">
       <body
         className={`${ubuntu.variable} ${roboto.variable} ${robotoFlex.variable} ${robotoMono.variable} antialiased`}
       >
