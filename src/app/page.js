@@ -274,7 +274,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Дата</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <p className="mb-1 text-[11px] font-medium text-zinc-500">Date</p>
+                <p className="mb-1 text-[11px] font-medium text-zinc-500">Дата</p>
                 <input
                   type="date"
                   value={mission.date}
@@ -283,7 +283,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                 />
               </div>
               <div>
-                <p className="mb-1 text-[11px] font-medium text-zinc-500">Time</p>
+                <p className="mb-1 text-[11px] font-medium text-zinc-500">Время</p>
                 <input
                   type="time"
                   value={mission.time}
