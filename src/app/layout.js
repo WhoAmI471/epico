@@ -1,15 +1,27 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Ubuntu, Roboto, Roboto_Flex, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const ubuntu = Ubuntu({
+  variable: "--font-ubuntu",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "700"],
+});
+
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["latin", "cyrillic"],
+});
+
+const robotoFlex = Roboto_Flex({
+  variable: "--font-roboto-flex",
+  subsets: ["latin", "cyrillic"],
 });
 
 export const metadata = {
@@ -21,7 +33,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ru">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${ubuntu.variable} ${roboto.variable} ${robotoFlex.variable} ${robotoMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

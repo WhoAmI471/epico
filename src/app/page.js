@@ -7,7 +7,7 @@ import {
   LANES,
   FILTER_PRESETS,
   PRIORITY_VISUAL,
-  PRIORITY_LABEL_EN,
+  PRIORITY_CONFIG_RU,
   INITIAL_MISSIONS,
 } from "../features/missions/constants";
 import { classNames } from "../shared/ui";
@@ -27,6 +27,7 @@ import {
   removeMemberFromProject,
 } from "../features/projects/localRepository";
 import { deriveHandleFromSession } from "../features/projects/utils";
+import { MissionTypeIcon } from "../features/missions/ui/MissionTypeIcon";
 import Image from "next/image";
 
 /* ────────────────────────────────────────────────────────── */
@@ -177,8 +178,8 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
         <div className="flex-1 px-4 py-5 space-y-5 overflow-y-auto">
           {/* Mission title */}
           <div>
-            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Mission</p>
-            <div className="flex items-center gap-2 rounded-2xl bg-[#1b1e23] px-4 py-3 ring-1 ring-white/[0.06]">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Миссия</p>
+            <div className="flex items-center gap-2 rounded-[4] bg-[#1b1e23] px-4 py-3 ring-1 ring-white/[0.06]">
               <input
                 type="text"
                 value={mission.title}
@@ -193,7 +194,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
 
           {/* Type */}
           <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Type</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Тип</p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(TYPE_CONFIG).map(([key, config]) => (
                 <button
@@ -201,13 +202,13 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                   type="button"
                   onClick={() => onChangeField("type", key)}
                   className={classNames(
-                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                    "inline-flex items-center gap-1.5 rounded-[4] px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
                     mission.type === key
-                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                       : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                   )}
                 >
-                  <span className={classNames("h-1.5 w-1.5 rounded-full", config.color)} />
+                  <MissionTypeIcon type={mission.type} />
                   {config.label}
                 </button>
               ))}
@@ -216,7 +217,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
 
           {/* Priority */}
           <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Priority</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Приоритет</p>
             <div className="flex flex-wrap gap-2">
               {["lowest", "low", "medium", "high", "highest"].map((key) => {
                 const visual = PRIORITY_VISUAL[key];
@@ -226,9 +227,9 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                     type="button"
                     onClick={() => onChangeField("priority", key)}
                     className={classNames(
-                      "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                      "inline-flex items-center gap-1 rounded-[4] px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
                       mission.priority === key
-                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                        ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                         : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                     )}
                   >
@@ -237,8 +238,9 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                       src={visual?.icon} 
                       width={18} 
                       height={18}
+                      alt=""
                     />
-                    {PRIORITY_LABEL_EN[key]}
+                    {PRIORITY_CONFIG_RU[key]}
                   </button>
                 );
               })}
@@ -247,7 +249,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
 
           {/* Status / Lane */}
           <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Status</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Статус</p>
             <div className="flex flex-wrap gap-2">
               {LANES.map((lane) => (
                 <button
@@ -255,9 +257,9 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                   type="button"
                   onClick={() => onChangeField("lane", lane)}
                   className={classNames(
-                    "rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                    "rounded-[4] px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
                     mission.lane === lane
-                      ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                      ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                       : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                   )}
                 >
@@ -269,7 +271,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
 
           {/* Date */}
           <div>
-            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Deadline</p>
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Дата</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <p className="mb-1 text-[11px] font-medium text-zinc-500">Date</p>
@@ -277,7 +279,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                   type="date"
                   value={mission.date}
                   onChange={(e) => onChangeField("date", e.target.value)}
-                  className="w-full rounded-xl bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-emerald-500/60"
+                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-[#3B7FFF]"
                 />
               </div>
               <div>
@@ -286,7 +288,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                   type="time"
                   value={mission.time}
                   onChange={(e) => onChangeField("time", e.target.value)}
-                  className="w-full rounded-xl bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none"
+                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none"
                 />
               </div>
             </div>
@@ -295,7 +297,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
           {/* Assignee */}
           {allAssignees.length > 0 && (
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Assignee</p>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Ответственный</p>
               <div className="flex flex-wrap gap-2">
                 {allAssignees.map((name) => (
                   <button
@@ -303,9 +305,9 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                     type="button"
                     onClick={() => onChangeField("assignee", name)}
                     className={classNames(
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
+                      "inline-flex items-center gap-1.5 rounded-[4] px-3 py-1.5 text-[12px] font-medium ring-1 transition-colors",
                       mission.assignee === name
-                        ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                        ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                         : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                     )}
                   >
@@ -325,9 +327,9 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
           <button
             type="button"
             onClick={onSave}
-            className="w-full rounded-2xl bg-emerald-500 py-3.5 text-[14px] font-semibold text-black hover:bg-emerald-400 transition-colors active:scale-[0.98]"
+            className="w-full rounded-[4] bg-[#3774E8] py-3.5 text-[14px] ring-1 ring-[#3B7FFF] font-semibold text-w transition-colors active:scale-[0.98]"
           >
-            Save
+            Сохранить
           </button>
         </div>
       </div>
@@ -366,7 +368,7 @@ function FiltersPanelContent({
   return (
     <div className="space-y-5">
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Quick filters</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Стандартные фильтры</p>
         <div className="flex flex-wrap gap-2">
           {FILTER_PRESETS.map((preset) => (
             <button
@@ -374,9 +376,9 @@ function FiltersPanelContent({
               type="button"
               onClick={() => onApplyPreset(preset)}
               className={classNames(
-                "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                "rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 filterPreset === preset.id
-                  ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                  ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
@@ -387,7 +389,7 @@ function FiltersPanelContent({
       </div>
 
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Type</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Тип</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(TYPE_CONFIG).map(([key, config]) => (
             <button
@@ -397,7 +399,7 @@ function FiltersPanelContent({
               className={classNames(
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 selectedTypes[key]
-                  ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                  ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
@@ -408,7 +410,7 @@ function FiltersPanelContent({
       </div>
 
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Status</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Статус</p>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -416,7 +418,7 @@ function FiltersPanelContent({
             className={classNames(
               "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               laneFilter === "All Mission"
-                ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                 : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
             )}
           >
@@ -430,7 +432,7 @@ function FiltersPanelContent({
               className={classNames(
                 "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 laneFilter === lane
-                  ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                  ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
@@ -441,7 +443,7 @@ function FiltersPanelContent({
       </div>
 
       <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Priority</p>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Приоритет</p>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -449,7 +451,7 @@ function FiltersPanelContent({
             className={classNames(
               "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               filterPriority === "all"
-                ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                 : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
             )}
           >
@@ -465,7 +467,7 @@ function FiltersPanelContent({
                 className={classNames(
                   "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   filterPriority === key
-                    ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                    ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                     : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                 )}
               >
@@ -474,8 +476,9 @@ function FiltersPanelContent({
                   src={visual?.icon} 
                   width={18} 
                   height={18}
+                  alt=""
                 />
-                {PRIORITY_LABEL_EN[key]}
+                {PRIORITY_CONFIG_RU[key]}
               </button>
             );
           })}
@@ -484,21 +487,21 @@ function FiltersPanelContent({
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">From date</p>
+          <p className="mb-1 text-[11px] font-medium text-zinc-400">От</p>
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
+            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
           />
         </div>
         <div>
-          <p className="mb-1 text-[11px] font-medium text-zinc-400">To date</p>
+          <p className="mb-1 text-[11px] font-medium text-zinc-400">До</p>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-emerald-500/60"
+            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
           />
         </div>
       </div>
@@ -506,11 +509,11 @@ function FiltersPanelContent({
       {allAssignees.length > 0 && (
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Assignees</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Ответственный</p>
             <button
               type="button"
               onClick={onToggleAssigneesAll}
-              className="text-[11px] font-medium text-emerald-400 hover:text-emerald-300"
+              className="text-[11px] font-medium text-w hover:text-w"
             >
               {selectedAssignees.length ? "Reset" : "All"}
             </button>
@@ -524,7 +527,7 @@ function FiltersPanelContent({
                 className={classNames(
                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   selectedAssignees.includes(name)
-                    ? "bg-emerald-500/20 ring-emerald-500/60 text-emerald-300"
+                    ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                     : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                 )}
               >
@@ -539,7 +542,7 @@ function FiltersPanelContent({
       )}
 
       <div className="flex items-center justify-between">
-        <span className="text-[12px] text-zinc-300">Only my missions</span>
+        <span className="text-[12px] text-zinc-300">Только мои миссии</span>
         <button
           type="button"
           role="switch"
@@ -547,7 +550,7 @@ function FiltersPanelContent({
           onClick={() => setOnlyMyMissions((v) => !v)}
           className={classNames(
             "relative inline-flex h-6 w-10 flex-shrink-0 items-center rounded-full transition-colors",
-            onlyMyMissions ? "bg-emerald-500" : "bg-white/15",
+            onlyMyMissions ? "bg-[#3B7FFF]" : "bg-white/15",
           )}
         >
           <span
@@ -565,7 +568,7 @@ function FiltersPanelContent({
           onClick={onAddUser}
           className="w-full rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
-          + Add member
+          + Добавить пользователя
         </button>
       )}
 
@@ -575,14 +578,14 @@ function FiltersPanelContent({
           onClick={onReset}
           className="flex-1 rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
-          Reset
+          Сбросить
         </button>
         <button
           type="button"
           onClick={onSave}
-          className="flex-1 rounded-xl bg-emerald-500 py-2.5 text-[12px] font-semibold text-black hover:bg-emerald-400 transition-colors"
+          className="flex-1 rounded-xl bg-[#3B7FFF] py-2.5 text-[12px] font-semibold text-w hover:bg-emerald-400 transition-colors"
         >
-          Apply
+          Принять
         </button>
       </div>
     </div>

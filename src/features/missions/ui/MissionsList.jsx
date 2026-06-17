@@ -9,12 +9,14 @@ function LaneBadge({ lane }) {
     <span
       className={classNames(
         /* Figma: rounded pill, 10px font, semibold */
-        "font-['Roboto_Mono'] inline-flex flex-shrink-0 items-center rounded-[4px] px-2.5 py-[3px] text-[10px] font-semibold leading-none whitespace-nowrap",
+        "inline-flex flex-shrink-0 items-center rounded-[4px] px-2.5 py-[3px] text-[10px] font-semibold leading-none whitespace-nowrap",
         cfg.bg,
         cfg.text,
       )}
+      
+      style={{ fontFamily: "var(--font-roboto-mono)", fontWeight: 400 }}
     >
-      {lane}
+      {cfg.name}
     </span>
   );
 }
@@ -77,11 +79,15 @@ export function MissionsList({ missions, selectedMissionId, onSelect }) {
                     src={priorityVisual.icon} 
                     width={18} 
                     height={18}
+                    alt=""
                   />
                 )}
-                {dateStr && <span>{dateStr}</span>}
+                {dateStr && <span style={{ fontFamily: "var(--font-roboto-mono)", fontWeight: 400 }}>{dateStr}</span>}
                 {mission.assignee && (
-                  <span className="truncate">{mission.assignee}</span>
+                  <span className="truncate" 
+                    style={{ fontFamily: "var(--font-roboto-mono)", fontWeight: 400 }}>
+                    {mission.assignee}
+                  </span>
                 )}
                 {/* Lane badge — right, top-aligned */}
                 <div className="self-center flex-shrink-0">

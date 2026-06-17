@@ -52,9 +52,9 @@ export const INITIAL_MISSIONS = [
 ];
 
 export const TYPE_CONFIG = {
-  feature: { label: "Feature", color: "bg-violet-500" },
-  research: { label: "Research", color: "bg-sky-500" },
-  task: { label: "Task", color: "bg-emerald-500" },
+  feature: { label: "Фичи", color: "bg-violet-500" },
+  research: { label: "Исследования", color: "bg-sky-500" },
+  task: { label: "Задачи", color: "bg-emerald-500" },
 };
 
 export const PRIORITY_CONFIG_RU = {
@@ -82,24 +82,24 @@ export const PRIORITY_VISUAL = {
 };
 
 export const FILTER_PRESETS = [
-  { id: "only-features", label: "Only Features", chipKey: "feature" },
-  { id: "only-researches", label: "Only Researches", chipKey: "research" },
-  { id: "only-tasks", label: "Only Tasks", chipKey: "task" },
+  { id: "only-features", label: "Только Фичи", chipKey: "feature" },
+  { id: "only-researches", label: "Только Исследования", chipKey: "research" },
+  { id: "only-tasks", label: "Только Задачи", chipKey: "task" },
 ];
 
 export const LANE_CONFIG = {
-  Backlog: { bg: "bg-[#9F1849]", text: "text-white" },
-  Research: { bg: "bg-[#6826AB]", text: "text-white" },
-  Development: { bg: "bg-[#0D4FCB]", text: "text-white" },
-  "QA & Test": { bg: "bg-[#1A8200]", text: "text-white" },
-  "Business Analysis": { bg: "bg-[#B65B08]", text: "text-white" },
+  Backlog: { name: "Бэклог", bg: "bg-[#9F1849]", text: "text-white" },
+  Research: { name: "Исследование", bg: "bg-[#6826AB]", text: "text-white" },
+  Development: { name: "Разработка", bg: "bg-[#0D4FCB]", text: "text-white" },
+  "QA & Test": { name: "Тестирование", bg: "bg-[#1A8200]", text: "text-white" },
+  "Business Analysis": { name: "Аналитика", bg: "bg-[#B65B08]", text: "text-white" },
 };
 
 export const LANES = [
-  "Backlog",
-  "Research",
-  "Development",
-  "QA & Test",
-  "Business Analysis",
+  "Бэклог",
+  "Исследование",
+  "Разработка",
+  "Тестирование",
+  "Аналитика",
 ];
 

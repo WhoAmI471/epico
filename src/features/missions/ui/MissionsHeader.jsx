@@ -54,7 +54,10 @@ export function MissionsHeader({
             priority
             className="h-6 w-auto"
           />
-          <span className="text-[28px] font-semi tracking-tight text-white">
+          <span
+            className="text-[28px] tracking-tight text-white"
+            style={{ fontFamily: "var(--font-ubuntu)", fontWeight: 400 }}
+          >
             Epico
           </span>
         </div>
@@ -75,10 +78,10 @@ export function MissionsHeader({
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-10 z-50 min-w-[160px] rounded-2xl bg-[#1b1e23] py-1 ring-1 ring-white/10 shadow-2xl">
+            <div className="absolute right-0 top-10 z-50 min-w-[60px] rounded-[4] bg-[#1b1e23] py-1 ring-1 ring-white/10 shadow-2xl">
               {isAuthed ? (
                 <>
-                  <Link
+                  {/* <Link
                     href="/profile"
                     className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-200 hover:bg-white/5"
                     onClick={() => setMenuOpen(false)}
@@ -88,7 +91,7 @@ export function MissionsHeader({
                     </span>
                     Профиль
                   </Link>
-                  <div className="my-1 h-px bg-white/10" />
+                  <div className="my-1 h-px bg-white/10" /> */}
                   <button
                     type="button"
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-rose-400 hover:bg-white/5"
@@ -121,7 +124,10 @@ export function MissionsHeader({
           onClick={onOpenProjectMenu}
           className="flex items-center gap-1.5 group min-w-0"
         >
-          <h1 className="text-[22px] font-bold tracking-tight text-white truncate group-hover:text-zinc-200 transition-colors">
+          <h1
+            className="text-2xl font-normal leading-normal overflow-hidden text-ellipsis text-white group-hover:text-zinc-200 transition-colors"
+            style={{ fontFamily: "var(--font-roboto-flex)", fontWeight: 400 }}
+          >
             {projectTitle || "Без названия"}
           </h1>
           {/* dropdown chevron */}
@@ -147,13 +153,13 @@ export function MissionsHeader({
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path
               d="M2 3.5h14l-5.25 6.3V15l-3.5-1.75V9.8L2 3.5z"
-              stroke={filtersActive ? "#4ade80" : "#a1a1aa"}
+              stroke={filtersActive ? "#3B7FFF" : "#a1a1aa"}
               strokeWidth="1.5"
               strokeLinejoin="round"
             />
           </svg>
           {filtersActive && (
-            <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[#3B7FFF]" />
           )}
         </button>
       </div>

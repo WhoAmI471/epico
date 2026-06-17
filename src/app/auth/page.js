@@ -44,17 +44,17 @@ export default function AuthPage() {
       <main className="flex flex-1 flex-col px-5 pb-10">
         {/* Logo */}
         <div className="mt-6 mb-10 flex items-center gap-2.5">
-          <Image src="/group-17.svg" alt="Epico" width={44} height={40} className="h-9 w-auto" />
+          <Image src="/group-17.svg" alt="Epico" width={24} height={22} />
           <span className="text-[20px] font-semibold">Epico</span>
         </div>
 
         {/* Welcome text */}
         <div className="mb-8">
           <h1 className="text-[30px] font-bold leading-tight">
-            Welcome to Epico!
+            Добро пожаловать <br/>в Epico!
           </h1>
           <p className="mt-2 text-[14px] text-zinc-400">
-            Sign in to manage your product missions
+            Войдите в систему, чтобы управлять заданиями по разработке продуктов.
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function AuthPage() {
           </button>
 
           {/* Telegram */}
-          <div className="rounded-2xl bg-[#1a1a1f] ring-1 ring-white/[0.06] overflow-hidden">
+          {/* <div className="rounded-2xl bg-[#1a1a1f] ring-1 ring-white/[0.06] overflow-hidden">
             <div className="px-5 pt-4 pb-3">
               <div className="flex items-center gap-2.5 mb-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#229ED9]">
@@ -102,18 +102,18 @@ export default function AuthPage() {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Demo link */}
-        <div className="mt-auto pt-10 text-center">
+        {/* <div className="mt-auto pt-10 text-center">
           <Link
             href="/"
             className="text-[13px] text-emerald-400 hover:text-emerald-300"
           >
             Перейти без авторизации →
           </Link>
-        </div>
+        </div> */}
       </main>
     </div>
   );

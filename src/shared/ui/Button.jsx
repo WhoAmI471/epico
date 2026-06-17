@@ -24,11 +24,12 @@ export function Button({
     <button
       type={type}
       className={classNames(
-        "inline-flex items-center justify-center rounded-full font-medium transition-colors",
+        "inline-flex items-center justify-center rounded-full transition-colors",
         VARIANTS[variant],
         SIZES[size],
         className,
       )}
+      style={{ fontFamily: "var(--font-roboto-flex)", fontWeight: 400, letterSpacing: "-0.32px" }}
       {...props}
     />
   );

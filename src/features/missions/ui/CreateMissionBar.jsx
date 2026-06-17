@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { classNames } from "../../../shared/ui";
 import { MissionTypeIcon } from "./MissionTypeIcon";
+import Image from "next/image";
 
 /* ── Type shape icons matching Figma design ── */
 const TYPE_OPTIONS = [
-  { key: "feature",  label: "Feature" },
-  { key: "research", label: "Research" },
-  { key: "task",     label: "Task" },
+  { key: "feature",  label: "Фича" },
+  { key: "research", label: "Исследование" },
+  { key: "task",     label: "Задача" },
 ];
 
 
@@ -72,16 +73,14 @@ export function CreateMissionBar({ onCreate }) {
     }
   }
 
-  const plusActive = step === "name" && title.trim().length > 0;
-
   return (
     <div className="px-4">
       <div
         className={classNames(
           /* Figma: border-radius 4px, padding 5px top/bottom, 8px left/right */
-          "flex items-center gap-2 bg-[#1b1e23] px-2 py-[5px] ring-1 transition-colors",
+          "flex items-center gap-2 bg-[#36393D] px-1 py-[2px] ring-1 transition-colors",
           step === "idle"
-            ? "cursor-pointer ring-white/[0.06] hover:ring-white/10"
+            ? "cursor-pointer ring-[#4E5054] hover:ring-white/10"
             : "ring-white/[0.08]",
         )}
         style={{ borderRadius: 4 }}
@@ -103,8 +102,8 @@ export function CreateMissionBar({ onCreate }) {
 
         {/* Middle content */}
         {step === "idle" && (
-          <span className="flex-1 text-[13px] text-zinc-600 select-none">
-            Add mission
+          <span className="flex-1 text-[13px] text-zinc-600 py-[7px] select-none">
+            Добавить миссию
           </span>
         )}
 
@@ -119,7 +118,7 @@ export function CreateMissionBar({ onCreate }) {
                   handleSelectType(key);
                 }}
                 style={{ borderRadius: 4 }}
-                className="inline-flex flex-shrink-0 items-center gap-1.5 bg-white/[0.07] px-4 py-[10px] text-[12px] font-medium text-zinc-200 hover:bg-white/[0.12] transition-colors"
+                className="inline-flex flex-shrink-0 items-center gap-1 ring-white ring-1 px-4 py-[6px] m-1 text-[12px] font-medium text-zinc-200 transition-colors"
               >
                 <MissionTypeIcon type={key} />
                 {label}
@@ -135,8 +134,8 @@ export function CreateMissionBar({ onCreate }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Mission name…"
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+            placeholder="Добавить миссию"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-zinc-100 py-[7px] placeholder:text-zinc-500 focus:outline-none"
           />
         )}
 
@@ -147,12 +146,15 @@ export function CreateMissionBar({ onCreate }) {
           aria-label="Create mission"
           className={classNames(
             "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[18px] font-light transition-colors",
-            plusActive
-              ? "bg-emerald-500 text-black hover:bg-emerald-400"
-              : "text-zinc-500 hover:text-zinc-300",
+            "text-zinc-500 hover:text-zinc-300",
           )}
         >
-          +
+          <Image 
+            src={"/Plus.svg"} 
+            width={12} 
+            height={12}
+            alt=""
+          />
         </button>
       </div>
     </div>
