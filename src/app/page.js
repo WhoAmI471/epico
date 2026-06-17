@@ -27,6 +27,7 @@ import {
   removeMemberFromProject,
 } from "../features/projects/localRepository";
 import { deriveHandleFromSession } from "../features/projects/utils";
+import Image from "next/image";
 
 /* ────────────────────────────────────────────────────────── */
 /* Inline type shape (matches Figma exactly)                  */
@@ -231,7 +232,12 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                         : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                     )}
                   >
-                    <span className={classNames("text-[11px]", visual?.color)}>{visual?.icon}</span>
+                    <Image 
+                      className={classNames("text-[10px]", visual?.color)} 
+                      src={visual?.icon} 
+                      width={18} 
+                      height={18}
+                    />
                     {PRIORITY_LABEL_EN[key]}
                   </button>
                 );
@@ -463,7 +469,12 @@ function FiltersPanelContent({
                     : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                 )}
               >
-                <span className={classNames("text-[10px]", visual?.color)}>{visual?.icon}</span>
+                <Image 
+                  className={classNames("text-[10px]", visual?.color)} 
+                  src={visual?.icon} 
+                  width={18} 
+                  height={18}
+                />
                 {PRIORITY_LABEL_EN[key]}
               </button>
             );
@@ -1027,10 +1038,10 @@ export default function Home() {
               />
 
               {/* Type chips */}
-              <TypeChips
+              {/* <TypeChips
                 selectedTypes={selectedTypes}
                 onToggleType={handleToggleType}
-              />
+              /> */}
 
               {/* Create mission bar */}
               <div className="pb-2">
@@ -1038,7 +1049,7 @@ export default function Home() {
               </div>
 
               {/* Missions count bar */}
-              <div className="flex items-center justify-between border-b border-white/[0.04] px-4 pb-2 text-[11px] text-zinc-600">
+              {/* <div className="flex items-center justify-between border-b border-white/[0.04] px-4 pb-2 text-[11px] text-zinc-600">
                 <span>{visibleMissions.length} missions</span>
                 <button
                   type="button"
@@ -1051,7 +1062,7 @@ export default function Home() {
                   <span className={classNames("h-1.5 w-1.5 rounded-full", onlyMyMissions ? "bg-emerald-400" : "bg-zinc-600")} />
                   Only mine
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {/* Missions list or empty state */}

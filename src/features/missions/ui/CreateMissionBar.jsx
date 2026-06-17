@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { classNames } from "../../../shared/ui";
+import { MissionTypeIcon } from "./MissionTypeIcon";
 
 /* ── Type shape icons matching Figma design ── */
 const TYPE_OPTIONS = [
@@ -10,51 +11,7 @@ const TYPE_OPTIONS = [
   { key: "task",     label: "Task" },
 ];
 
-function TypeShape({ type, size = 10 }) {
-  if (type === "feature") {
-    return (
-      <span
-        className="inline-block flex-shrink-0"
-        style={{ width: size, height: size, background: "#8b5cf6", borderRadius: 2 }}
-      />
-    );
-  }
-  if (type === "research") {
-    return (
-      <span
-        className="inline-block flex-shrink-0 rounded-full"
-        style={{ width: size, height: size, background: "#38bdf8" }}
-      />
-    );
-  }
-  if (type === "task") {
-    return (
-      <span
-        className="inline-block flex-shrink-0"
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: `${size / 2}px solid transparent`,
-          borderRight: `${size / 2}px solid transparent`,
-          borderBottom: `${size}px solid #22c55e`,
-        }}
-      />
-    );
-  }
-  return null;
-}
 
-/* ── Grid icon for idle state ── */
-function GridIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <rect x="1" y="1" width="5" height="5" rx="1" fill="#52525b" />
-      <rect x="8" y="1" width="5" height="5" rx="1" fill="#52525b" />
-      <rect x="1" y="8" width="5" height="5" rx="1" fill="#52525b" />
-      <rect x="8" y="8" width="5" height="5" rx="1" fill="#52525b" />
-    </svg>
-  );
-}
 
 /**
  * CreateMissionBar — 3-step Figma flow:
@@ -133,9 +90,14 @@ export function CreateMissionBar({ onCreate }) {
         {/* Left icon — grid (idle/type) or type shape (name) */}
         <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center">
           {step === "name" && selectedType ? (
-            <TypeShape type={selectedType} size={13} />
+            <MissionTypeIcon type={selectedType} />
           ) : (
-            <GridIcon />
+            <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" clipRule="evenodd" d="M4.5 11.7759H13.3931L8.94726 4.5L4.5 11.7759ZM12.0557 11.0259H5.8374L8.94581 5.93848L12.0557 11.0259Z" fill="#39772D"/>
+              <path d="M20.0991 7.4956H22.2876V8.78028H20.0991V10.9673H18.8159V8.78028H16.6274V7.4956H18.8159V5.30859H20.0991V7.4956Z" fill="#898A8D"/>
+              <path fillRule="evenodd" clipRule="evenodd" d="M20.2749 14.2222C22.3132 14.4293 23.9032 16.1517 23.9032 18.2446L23.8829 18.6577C23.6757 20.6959 21.9546 22.2859 19.8618 22.2861L19.4487 22.2657C17.546 22.0726 16.0327 20.5604 15.8394 18.6577L15.8188 18.2446C15.8189 16.0122 17.6294 14.2018 19.8618 14.2017L20.2749 14.2222ZM16.5689 18.2446C16.5689 16.4264 18.0436 14.9518 19.8618 14.9517C21.68 14.9519 23.1532 16.4265 23.1532 18.2446C23.1531 20.0626 21.6798 21.5359 19.8618 21.5361C18.0437 21.5361 16.5691 20.0628 16.5689 18.2446Z" fill="#2F60BA"/>
+              <path fillRule="evenodd" clipRule="evenodd" d="M12.5845 22.2861H5.30859V15.0103H12.5845V22.2861ZM11.8345 21.5361H6.05859V15.7603H11.8345V21.5361Z" fill="#9150AB"/>
+            </svg>
           )}
         </div>
 
@@ -159,7 +121,7 @@ export function CreateMissionBar({ onCreate }) {
                 style={{ borderRadius: 4 }}
                 className="inline-flex flex-shrink-0 items-center gap-1.5 bg-white/[0.07] px-4 py-[10px] text-[12px] font-medium text-zinc-200 hover:bg-white/[0.12] transition-colors"
               >
-                <TypeShape type={key} size={10} />
+                <MissionTypeIcon type={key} />
                 {label}
               </button>
             ))}

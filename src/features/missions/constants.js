@@ -74,11 +74,11 @@ export const PRIORITY_LABEL_EN = {
 };
 
 export const PRIORITY_VISUAL = {
-  lowest: { icon: "˅˅", color: "text-emerald-400" },
-  low: { icon: "˅", color: "text-emerald-400" },
-  medium: { icon: "=", color: "text-amber-300" },
-  high: { icon: "˄", color: "text-rose-400" },
-  highest: { icon: "˄˄", color: "text-rose-400" },
+  lowest: { icon: "/lowest.svg", color: "text-emerald-400" },
+  low: { icon: "/low.svg", color: "text-emerald-400" },
+  medium: { icon: "/medium.svg", color: "text-amber-300" },
+  high: { icon: "/high.svg", color: "text-rose-400" },
+  highest: { icon: "/highest.svg", color: "text-rose-400" },
 };
 
 export const FILTER_PRESETS = [

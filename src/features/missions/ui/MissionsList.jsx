@@ -1,6 +1,7 @@
 import { LANE_CONFIG, PRIORITY_VISUAL } from "../constants";
 import { classNames } from "../../../shared/ui";
 import { MissionTypeIcon } from "./MissionTypeIcon";
+import Image from "next/image";
 
 function LaneBadge({ lane }) {
   const cfg = LANE_CONFIG[lane] || { bg: "bg-zinc-700", text: "text-white" };
@@ -8,7 +9,7 @@ function LaneBadge({ lane }) {
     <span
       className={classNames(
         /* Figma: rounded pill, 10px font, semibold */
-        "inline-flex flex-shrink-0 items-center rounded-full px-2.5 py-[3px] text-[10px] font-semibold leading-none whitespace-nowrap",
+        "font-['Roboto_Mono'] inline-flex flex-shrink-0 items-center rounded-[4px] px-2.5 py-[3px] text-[10px] font-semibold leading-none whitespace-nowrap",
         cfg.bg,
         cfg.text,
       )}
@@ -25,7 +26,7 @@ export function MissionsList({ missions, selectedMissionId, onSelect }) {
 
   return (
     /* Figma: items separated by thin divider, 12px gap between rows */
-    <div className="divide-y divide-white/[0.04]">
+    <div>
       {missions.map((mission) => {
         const isSelected = selectedMissionId === mission.id;
 
@@ -51,15 +52,15 @@ export function MissionsList({ missions, selectedMissionId, onSelect }) {
             }}
             className={classNames(
               /* Figma: row 347×41px, no vertical padding on row (height from content) */
-              "flex cursor-pointer items-center gap-2 px-3.5 py-[3px] transition-colors",
+              "flex cursor-pointer items-center gap-2 px-3.5 py-[6px] transition-colors",
               isSelected
                 ? "bg-white/[0.06]"
                 : "hover:bg-white/[0.03] active:bg-white/[0.06]",
             )}
           >
             {/* Type shape icon — Figma: circle / square / triangle, size sm */}
-            <div className="flex-shrink-0 self-center">
-              <MissionTypeIcon type={mission.type} size="sm" />
+            <div className="flex-shrink-0 self-center pb-4">
+              <MissionTypeIcon type={mission.type} />
             </div>
 
             {/* Content: title + secondary info */}
@@ -71,20 +72,22 @@ export function MissionsList({ missions, selectedMissionId, onSelect }) {
               {/* Figma: secondary info — gap 10px between items, 11px text */}
               <div className="mt-1 flex items-center gap-[10px] text-[11px] text-zinc-500">
                 {priorityVisual && (
-                  <span className={classNames("font-medium leading-none", priorityVisual.color)}>
-                    {priorityVisual.icon}
-                  </span>
+                  <Image 
+                    className={classNames("font-medium leading-none", priorityVisual.color)} 
+                    src={priorityVisual.icon} 
+                    width={18} 
+                    height={18}
+                  />
                 )}
                 {dateStr && <span>{dateStr}</span>}
                 {mission.assignee && (
                   <span className="truncate">{mission.assignee}</span>
                 )}
+                {/* Lane badge — right, top-aligned */}
+                <div className="self-center flex-shrink-0">
+                  <LaneBadge lane={mission.lane} />
+                </div>
               </div>
-            </div>
-
-            {/* Lane badge — right, top-aligned */}
-            <div className="self-center flex-shrink-0">
-              <LaneBadge lane={mission.lane} />
             </div>
           </article>
         );

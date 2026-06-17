@@ -49,12 +49,12 @@ export function MissionsHeader({
           <Image
             src="/group-17.svg"
             alt="Epico"
-            width={40}
-            height={36}
+            width={24}
+            height={22}
             priority
-            className="h-8 w-auto"
+            className="h-6 w-auto"
           />
-          <span className="text-[17px] font-semibold tracking-tight text-white">
+          <span className="text-[28px] font-semi tracking-tight text-white">
             Epico
           </span>
         </div>
@@ -125,7 +125,7 @@ export function MissionsHeader({
             {projectTitle || "Без названия"}
           </h1>
           {/* dropdown chevron */}
-          <svg
+          {/* <svg
             width="14"
             height="14"
             viewBox="0 0 14 14"
@@ -133,7 +133,7 @@ export function MissionsHeader({
             className="flex-shrink-0 text-zinc-500 group-hover:text-zinc-300 transition-colors mt-0.5"
           >
             <path d="M3 5l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          </svg> */}
         </button>
 
         {/* Filter button */}
