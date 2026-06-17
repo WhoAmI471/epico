@@ -5,7 +5,7 @@ export const INITIAL_MISSIONS = [
     date: "2024-04-12",
     time: "11:24",
     type: "research",
-    lane: "Backlog",
+    lane: "Бэклог",
     priority: "medium",
     assignee: "@leonidlapidus",
   },
@@ -15,7 +15,7 @@ export const INITIAL_MISSIONS = [
     date: "2024-04-11",
     time: "11:24",
     type: "feature",
-    lane: "Development",
+    lane: "Разработка",
     priority: "low",
     assignee: "@ElderlyTN",
   },
@@ -25,7 +25,7 @@ export const INITIAL_MISSIONS = [
     date: "2024-04-11",
     time: "11:24",
     type: "task",
-    lane: "QA & Test",
+    lane: "Тестирование",
     priority: "high",
     assignee: "@EgorVict",
   },
@@ -35,7 +35,7 @@ export const INITIAL_MISSIONS = [
     date: "2024-04-11",
     time: "11:24",
     type: "feature",
-    lane: "Business Analysis",
+    lane: "Аналитика",
     priority: "highest",
     assignee: "@vikakorobov",
   },
@@ -45,7 +45,7 @@ export const INITIAL_MISSIONS = [
     date: "2024-04-11",
     time: "11:24",
     type: "research",
-    lane: "Backlog",
+    lane: "Бэклог",
     priority: "medium",
     assignee: "@vvmalya",
   },
@@ -88,11 +88,11 @@ export const FILTER_PRESETS = [
 ];
 
 export const LANE_CONFIG = {
-  Backlog: { name: "Бэклог", bg: "bg-[#9F1849]", text: "text-white" },
-  Research: { name: "Исследование", bg: "bg-[#6826AB]", text: "text-white" },
-  Development: { name: "Разработка", bg: "bg-[#0D4FCB]", text: "text-white" },
-  "QA & Test": { name: "Тестирование", bg: "bg-[#1A8200]", text: "text-white" },
-  "Business Analysis": { name: "Аналитика", bg: "bg-[#B65B08]", text: "text-white" },
+  "Бэклог":       { bg: "bg-[#9F1849]", text: "text-white" },
+  "Исследование": { bg: "bg-[#6826AB]", text: "text-white" },
+  "Разработка":   { bg: "bg-[#0D4FCB]", text: "text-white" },
+  "Тестирование": { bg: "bg-[#1A8200]", text: "text-white" },
+  "Аналитика":    { bg: "bg-[#B65B08]", text: "text-white" },
 };
 
 export const LANES = [

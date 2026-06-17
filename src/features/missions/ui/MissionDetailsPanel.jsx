@@ -1,5 +1,5 @@
 import { classNames, Button, TextInput } from "../../../shared/ui";
-import { LANES, PRIORITY_LABEL_EN, PRIORITY_VISUAL, TYPE_CONFIG } from "../constants";
+import { LANE_CONFIG, LANES, PRIORITY_LABEL_EN, PRIORITY_VISUAL, TYPE_CONFIG } from "../constants";
 import { MissionTypeIcon } from "./MissionTypeIcon";
 
 export function MissionDetailsPanel({
@@ -95,21 +95,25 @@ export function MissionDetailsPanel({
         <div>
           <p className="mb-1.5 text-xs font-medium text-zinc-300">Колонка</p>
           <div className="flex flex-wrap gap-1.5">
-            {LANES.map((lane) => (
-              <button
-                key={lane}
-                type="button"
-                onClick={() => onChangeField("lane", lane)}
-                className={classNames(
-                  "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                  mission.lane === lane
-                    ? "ring-emerald-400 bg-emerald-500/20 text-emerald-50"
-                    : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
-                )}
-              >
-                {lane}
-              </button>
-            ))}
+            {LANES.map((lane) => {
+              const cfg = LANE_CONFIG[lane] || {};
+              const isSelected = mission.lane === lane;
+              return (
+                <button
+                  key={lane}
+                  type="button"
+                  onClick={() => onChangeField("lane", lane)}
+                  className={classNames(
+                    "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                    isSelected
+                      ? `${cfg.bg} ${cfg.text} ring-transparent`
+                      : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
+                  )}
+                >
+                  {lane}
+                </button>
+              );
+            })}
           </div>
         </div>
 

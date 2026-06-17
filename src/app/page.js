@@ -378,7 +378,7 @@ function FiltersPanelContent({
               className={classNames(
                 "rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 filterPreset === preset.id
-                  ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
+                  ? "bg-[#3774e875] ring-[#3B7FFF] text-emerald-300"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
               )}
             >
@@ -397,7 +397,7 @@ function FiltersPanelContent({
               type="button"
               onClick={() => onToggleType(key)}
               className={classNames(
-                "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                "inline-flex items-center gap-1.5 rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 selectedTypes[key]
                   ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -416,7 +416,7 @@ function FiltersPanelContent({
             type="button"
             onClick={() => setLaneFilter("All Mission")}
             className={classNames(
-              "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+              "rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               laneFilter === "All Mission"
                 ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                 : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -430,7 +430,7 @@ function FiltersPanelContent({
               type="button"
               onClick={() => setLaneFilter(lane)}
               className={classNames(
-                "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                "rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                 laneFilter === lane
                   ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                   : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -449,7 +449,7 @@ function FiltersPanelContent({
             type="button"
             onClick={() => setFilterPriority("all")}
             className={classNames(
-              "rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+              "rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
               filterPriority === "all"
                 ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                 : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -465,7 +465,7 @@ function FiltersPanelContent({
                 type="button"
                 onClick={() => setFilterPriority(key)}
                 className={classNames(
-                  "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                  "inline-flex items-center gap-1 rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   filterPriority === key
                     ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                     : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -492,7 +492,7 @@ function FiltersPanelContent({
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
+            className="w-full rounded-[4] bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
           />
         </div>
         <div>
@@ -501,7 +501,7 @@ function FiltersPanelContent({
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="w-full rounded-xl bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
+            className="w-full rounded-[4] bg-white/[0.05] px-3 py-2 text-[12px] text-zinc-200 ring-1 ring-white/10 focus:outline-none focus:ring-[#3B7FFF]"
           />
         </div>
       </div>
@@ -525,7 +525,7 @@ function FiltersPanelContent({
                 type="button"
                 onClick={() => onToggleAssignee(name)}
                 className={classNames(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                  "inline-flex items-center gap-1.5 rounded-[4] px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
                   selectedAssignees.includes(name)
                     ? "bg-[#3774e875] ring-[#3B7FFF] text-w"
                     : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
@@ -566,7 +566,7 @@ function FiltersPanelContent({
         <button
           type="button"
           onClick={onAddUser}
-          className="w-full rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+          className="w-full rounded-[4] bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
           + Добавить пользователя
         </button>
@@ -576,14 +576,14 @@ function FiltersPanelContent({
         <button
           type="button"
           onClick={onReset}
-          className="flex-1 rounded-xl bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
+          className="flex-1 rounded-[4] bg-white/[0.05] py-2.5 text-[12px] font-medium text-zinc-300 ring-1 ring-white/10 hover:bg-white/10 transition-colors"
         >
           Сбросить
         </button>
         <button
           type="button"
           onClick={onSave}
-          className="flex-1 rounded-xl bg-[#3B7FFF] py-2.5 text-[12px] font-semibold text-w hover:bg-emerald-400 transition-colors"
+          className="flex-1 rounded-[4] bg-[#3B7FFF] py-2.5 text-[12px] font-semibold text-w hover:bg-emerald-400 transition-colors"
         >
           Принять
         </button>
@@ -1085,7 +1085,7 @@ export default function Home() {
             <BottomSheet
               open={showFiltersSheet}
               onClose={() => setShowFiltersSheet(false)}
-              title="Filters"
+              title="Фильтры"
             >
               <FiltersPanelContent
                 onAddUser={handleAddUserToProject}

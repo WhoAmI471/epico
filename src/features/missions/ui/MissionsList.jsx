@@ -8,15 +8,12 @@ function LaneBadge({ lane }) {
   return (
     <span
       className={classNames(
-        /* Figma: rounded pill, 10px font, semibold */
         "inline-flex flex-shrink-0 items-center rounded-[4px] px-2.5 py-[3px] text-[10px] font-semibold leading-none whitespace-nowrap",
         cfg.bg,
         cfg.text,
       )}
-      
-      style={{ fontFamily: "var(--font-roboto-mono)", fontWeight: 400 }}
     >
-      {cfg.name}
+      {lane}
     </span>
   );
 }

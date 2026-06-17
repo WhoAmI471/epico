@@ -7,6 +7,7 @@ import {
 } from "../../../shared/ui";
 import {
   FILTER_PRESETS,
+  LANE_CONFIG,
   LANES,
   PRIORITY_LABEL_EN,
   PRIORITY_VISUAL,
@@ -126,21 +127,25 @@ export function FiltersPanel({
               >
                 All Mission
               </button>
-              {LANES.map((lane) => (
-                <button
-                  key={lane}
-                  type="button"
-                  onClick={() => setLaneFilter(lane)}
-                  className={classNames(
-                    "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
-                    laneFilter === lane
-                      ? "ring-emerald-400 bg-emerald-500/20 text-emerald-50"
-                      : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
-                  )}
-                >
-                  {lane}
-                </button>
-              ))}
+              {LANES.map((lane) => {
+                const cfg = LANE_CONFIG[lane] || {};
+                const isSelected = laneFilter === lane;
+                return (
+                  <button
+                    key={lane}
+                    type="button"
+                    onClick={() => setLaneFilter(lane)}
+                    className={classNames(
+                      "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-medium ring-1 transition-colors",
+                      isSelected
+                        ? `${cfg.bg} ${cfg.text} ring-transparent`
+                        : "ring-zinc-700 bg-zinc-950 text-zinc-300 hover:ring-zinc-500",
+                    )}
+                  >
+                    {lane}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
