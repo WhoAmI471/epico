@@ -208,7 +208,7 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
                       : "bg-white/[0.05] ring-white/10 text-zinc-300 hover:ring-white/20",
                   )}
                 >
-                  <MissionTypeIcon type={mission.type} />
+                  <MissionTypeIcon type={key} />
                   {config.label}
                 </button>
               ))}
@@ -274,21 +274,21 @@ function MissionDetailPage({ mission, allAssignees, onChangeField, onSave, onClo
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Дата</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <p className="mb-1 text-[11px] font-medium text-zinc-500">Date</p>
+                <p className="mb-1 text-[11px] font-medium text-zinc-500">Дата</p>
                 <input
                   type="date"
                   value={mission.date}
                   onChange={(e) => onChangeField("date", e.target.value)}
-                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-[#3B7FFF]"
+                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-[#3B7FFF]"        
                 />
               </div>
               <div>
                 <p className="mb-1 text-[11px] font-medium text-zinc-500">Time</p>
                 <input
-                  type="time"
-                  value={mission.time}
-                  onChange={(e) => onChangeField("time", e.target.value)}
-                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none"
+                  type="date"
+                  value={mission.date}
+                  onChange={(e) => onChangeField("date", e.target.value)}
+                  className="w-full rounded-[4] bg-[#1b1e23] px-3 py-2.5 text-[13px] text-zinc-200 ring-1 ring-white/[0.06] focus:outline-none focus:ring-[#3B7FFF]"
                 />
               </div>
             </div>
@@ -1086,7 +1086,7 @@ export default function Home() {
               open={showFiltersSheet}
               onClose={() => setShowFiltersSheet(false)}
               title="Фильтры"
-            >
+ Фильтры    >
               <FiltersPanelContent
                 onAddUser={handleAddUserToProject}
                 filterPreset={filterPreset}

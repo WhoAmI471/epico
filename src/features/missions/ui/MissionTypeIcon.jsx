@@ -1,39 +1,25 @@
-import Image from "next/image";
-import { classNames } from "../utils";
-
 export function MissionTypeIcon({ type }) {
-  return (
-    <span
-      className={classNames(
-        "inline-flex flex-none items-center justify-center text-[11px] text-zinc-100",
-      )}
-      aria-hidden="true"
-    >
-      {type === "research" && (
-        <Image 
-          src={"/Mission type(Research).svg"} 
-          width={20} 
-          height={20}
-          alt="mission type research"
-        />
-      )}
-      {type === "feature" && (
-        <Image 
-          src={"/Mission type(Feature).svg"} 
-          width={20} 
-          height={20}
-          alt="mission type feature"
-        />
-      )}
-      {type === "task" && (
-        <Image 
-          src={"/Mission type(Task).svg"} 
-          width={20} 
-          height={20}
-          alt="mission type task"
-        />
-      )}
-    </span>
-  );
+  if (type === "feature") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <rect x="4.5" y="4.5" width="9" height="9" fill="#C768E9" />
+      </svg>
+    );
+  }
+  if (type === "research") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="5" fill="#3B7FFF" />
+      </svg>
+    );
+  }
+  if (type === "task") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M9 4L14.5 13H3.5L9 4Z" fill="#51B738" />
+      </svg>
+    );
+  }
+  return null;
 }
 
